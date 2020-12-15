@@ -1,0 +1,7 @@
+{
+  "groupId": "com.jb.blog.openapi",
+  "artifactId": "openapi",
+  "artifactVersion": "0.0.1",
+  "dateLibrary": "java8",
+  "invokerPackage":"com.jb.blog.openapi"
+}

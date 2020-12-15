@@ -1,0 +1,266 @@
+openapi: 3.0.1
+info:
+  title: Blog
+  description: ''
+  contact:
+    email: johan@johanbaskovec.fr
+  version: 0.0.0
+servers:
+  - url: localhost:8081
+    description: The server
+paths:
+  /article/{id}:
+    get:
+      description: Get an article
+      operationId: getArticleById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ObjectId'
+      responses:
+        200:
+          description: An article
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Article'
+        404:
+          description: Article not found
+  /article:
+    put:
+      security:
+        - cookieAuth: []
+      description: Update an article
+      operationId: updateArticle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleFormData'
+      responses:
+        204:
+          description: Article updated, no content returned
+        404:
+          description: Article not found
+    post:
+      security:
+        - cookieAuth: [Admin, Editor]
+      description: Insert an article
+      operationId: insertArticle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleFormData'
+      responses:
+        204:
+          description: Article created, no content returned
+    get:
+      description: Get all the articles
+      operationId: getAllArticles
+      responses:
+        200:
+          description: All the articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+  /register:
+    post:
+      description: Register
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationForm'
+      responses:
+        204:
+          description: User created, no content
+  /logout:
+    post:
+      security:
+        - cookieAuth: []
+      description: Logout
+      operationId: logout
+      "x-vertx-event-bus": session_service
+      responses:
+        204:
+          description: Logout, no content
+  /me:
+    get:
+      security:
+        - cookieAuth: []
+      description: Get the current session
+      operationId: getCurrentAuthenticatedUser
+      responses:
+        200:
+          description: The authenticated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /login:
+    post:
+      description: Create a new HTTP session
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginForm'
+      responses:
+        400:
+          description: Username or password incorrect
+        200:
+          description: The authenticated user
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: JSESSIONID=abcde12345; Path=/; HttpOnly
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+components:
+  schemas:
+    ObjectId:
+      type: string
+      nullable: false
+    ServerError:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          nullable: false
+    ValidationError:
+      type: object
+      required:
+        - message
+        - parameterName
+      properties:
+        message:
+          type: string
+          nullable: false
+        parameterName:
+          type: string
+          nullable: false
+    ClientError:
+      type: object
+      required:
+        - message
+        - parameterName
+      properties:
+        message:
+          type: string
+          nullable: false
+        parameterName:
+          type: string
+          nullable: false
+    Article:
+      type: object
+      required:
+        - id
+        - title
+        - content
+        - version
+        - author
+      properties:
+        id:
+          $ref: '#/components/schemas/ObjectId'
+        title:
+          type: string
+          nullable: false
+        content:
+          type: string
+          nullable: false
+        author:
+          $ref: '#/components/schemas/ObjectId'
+        version:
+          type: integer
+          nullable: false
+    ArticleFormData:
+      type: object
+      required:
+        - id
+        - title
+        - content
+      properties:
+        id:
+          $ref: '#/components/schemas/ObjectId'
+        title:
+          type: string
+          nullable: false
+        content:
+          type: string
+          nullable: false
+    LoginForm:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          nullable: false
+        password:
+          type: string
+          nullable: false
+    RegistrationForm:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          nullable: false
+        password:
+          type: string
+          nullable: false
+    User:
+      type: object
+      required:
+        - username
+        - version
+      properties:
+        username:
+          type: string
+          nullable: false
+        password:
+          type: string
+          nullable: true
+        version:
+          type: integer
+          nullable: false
+    HttpSession:
+      type: object
+      required:
+        - id
+        - username
+      properties:
+        id:
+          type: string
+          nullable: false
+        username:
+          type: string
+          nullable: false
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: SESSIONID
+
+
