@@ -2,7 +2,7 @@ package com.example.starter;
 
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.pgclient.PgPool;
-import jooq.tables.daos.DbUserDao;
+import jooq.tables.daos.DbBlogUserDao;
 import org.jooq.Configuration;
 import org.openapitools.vertxweb.server.model.User;
 
@@ -17,11 +17,11 @@ public class HttpSessionController {
 
   public void getCurrentAuthenticatedUser(RoutingContext routingContext) {
     AppUser sessionUser = (AppUser) routingContext.user();
-    DbUserDao dbUserDao = new DbUserDao(configuration, pool);
-    dbUserDao.findOneById(sessionUser.principal().getString("username"))
-      .onSuccess(dbUser -> {
+    DbBlogUserDao dbBlogUserDao = new DbBlogUserDao(configuration, pool);
+    dbBlogUserDao.findOneById(sessionUser.principal().getString("username"))
+      .onSuccess(dbBlogUser -> {
         User user = new User();
-        user.setUsername(dbUser.getUsername());
+        user.setUsername(dbBlogUser.getUsername());
         routingContext.json(user);
       }).onFailure(t -> routingContext.fail(t));
   }

@@ -7,9 +7,9 @@ package jooq.tables;
 import java.util.Arrays;
 import java.util.List;
 
+import jooq.DbPublic;
 import jooq.Indexes;
 import jooq.Keys;
-import jooq.Public;
 import jooq.tables.records.DbArticleRecord;
 
 import org.jooq.Field;
@@ -33,12 +33,12 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DbArticle extends TableImpl<DbArticleRecord> {
 
-    private static final long serialVersionUID = 470528192;
+    private static final long serialVersionUID = -34446101;
 
     /**
-     * The reference instance of <code>public.db_article</code>
+     * The reference instance of <code>public.article</code>
      */
-    public static final DbArticle DB_ARTICLE = new DbArticle();
+    public static final DbArticle ARTICLE = new DbArticle();
 
     /**
      * The class holding records for this type
@@ -49,49 +49,49 @@ public class DbArticle extends TableImpl<DbArticleRecord> {
     }
 
     /**
-     * The column <code>public.db_article.id</code>.
+     * The column <code>public.article.id</code>.
      */
     public final TableField<DbArticleRecord, String> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.VARCHAR(36).nullable(false), this, "");
 
     /**
-     * The column <code>public.db_article.title</code>.
+     * The column <code>public.article.title</code>.
      */
     public final TableField<DbArticleRecord, String> TITLE = createField(DSL.name("title"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>public.db_article.content</code>.
+     * The column <code>public.article.content</code>.
      */
     public final TableField<DbArticleRecord, String> CONTENT = createField(DSL.name("content"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>public.db_article.author_id</code>.
+     * The column <code>public.article.author_id</code>.
      */
-    public final TableField<DbArticleRecord, String> AUTHOR_ID = createField(DSL.name("author_id"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final TableField<DbArticleRecord, String> AUTHOR_ID = createField(DSL.name("author_id"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
-     * The column <code>public.db_article.version</code>.
+     * The column <code>public.article.version</code>.
      */
     public final TableField<DbArticleRecord, Integer> VERSION = createField(DSL.name("version"), org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * Create a <code>public.db_article</code> table reference
+     * Create a <code>public.article</code> table reference
      */
     public DbArticle() {
-        this(DSL.name("db_article"), null);
+        this(DSL.name("article"), null);
     }
 
     /**
-     * Create an aliased <code>public.db_article</code> table reference
+     * Create an aliased <code>public.article</code> table reference
      */
     public DbArticle(String alias) {
-        this(DSL.name(alias), DB_ARTICLE);
+        this(DSL.name(alias), ARTICLE);
     }
 
     /**
-     * Create an aliased <code>public.db_article</code> table reference
+     * Create an aliased <code>public.article</code> table reference
      */
     public DbArticle(Name alias) {
-        this(alias, DB_ARTICLE);
+        this(alias, ARTICLE);
     }
 
     private DbArticle(Name alias, Table<DbArticleRecord> aliased) {
@@ -103,12 +103,12 @@ public class DbArticle extends TableImpl<DbArticleRecord> {
     }
 
     public <O extends Record> DbArticle(Table<O> child, ForeignKey<O, DbArticleRecord> key) {
-        super(child, key, DB_ARTICLE);
+        super(child, key, ARTICLE);
     }
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return DbPublic.PUBLIC;
     }
 
     @Override
@@ -128,11 +128,11 @@ public class DbArticle extends TableImpl<DbArticleRecord> {
 
     @Override
     public List<ForeignKey<DbArticleRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<DbArticleRecord, ?>>asList(Keys.DB_ARTICLE__ARTICLE_USER_USERNAME_FK);
+        return Arrays.<ForeignKey<DbArticleRecord, ?>>asList(Keys.ARTICLE__ARTICLE_USER_USERNAME_FK);
     }
 
-    public DbUser dbUser() {
-        return new DbUser(this, Keys.DB_ARTICLE__ARTICLE_USER_USERNAME_FK);
+    public DbBlogUser blogUser() {
+        return new DbBlogUser(this, Keys.ARTICLE__ARTICLE_USER_USERNAME_FK);
     }
 
     @Override

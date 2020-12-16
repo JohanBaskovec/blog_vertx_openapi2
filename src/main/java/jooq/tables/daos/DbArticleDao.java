@@ -28,7 +28,7 @@ public class DbArticleDao extends AbstractReactiveVertxDAO<DbArticleRecord, jooq
      * @param delegate A configured AsyncSQLClient that is used for query execution
      */
     public DbArticleDao(Configuration configuration, io.vertx.sqlclient.SqlClient delegate) {
-        super(DbArticle.DB_ARTICLE, jooq.tables.pojos.DbArticle.class, new ReactiveClassicQueryExecutor<DbArticleRecord,jooq.tables.pojos.DbArticle,String>(configuration,delegate,jooq.tables.mappers.RowMappers.getDbArticleMapper()));
+        super(DbArticle.ARTICLE, jooq.tables.pojos.DbArticle.class, new ReactiveClassicQueryExecutor<DbArticleRecord,jooq.tables.pojos.DbArticle,String>(configuration,delegate,jooq.tables.mappers.RowMappers.getDbArticleMapper()));
     }
 
     @Override
@@ -39,57 +39,57 @@ public class DbArticleDao extends AbstractReactiveVertxDAO<DbArticleRecord, jooq
     /**
      * Find records that have <code>title IN (values)</code> asynchronously
      */
-    public Future<List<jooq.tables.pojos.DbArticle>> findManyByTitle(Collection<String> values) {
-        return findManyByCondition(DbArticle.DB_ARTICLE.TITLE.in(values));
+    public Future<List<jooq.tables.pojos.DbArticle>> findManyByDbTitle(Collection<String> values) {
+        return findManyByCondition(DbArticle.ARTICLE.TITLE.in(values));
     }
 
     /**
      * Find records that have <code>title IN (values)</code> asynchronously limited by the given limit
      */
-    public Future<List<jooq.tables.pojos.DbArticle>> findManyByTitle(Collection<String> values, int limit) {
-        return findManyByCondition(DbArticle.DB_ARTICLE.TITLE.in(values),limit);
+    public Future<List<jooq.tables.pojos.DbArticle>> findManyByDbTitle(Collection<String> values, int limit) {
+        return findManyByCondition(DbArticle.ARTICLE.TITLE.in(values),limit);
     }
 
     /**
      * Find records that have <code>content IN (values)</code> asynchronously
      */
-    public Future<List<jooq.tables.pojos.DbArticle>> findManyByContent(Collection<String> values) {
-        return findManyByCondition(DbArticle.DB_ARTICLE.CONTENT.in(values));
+    public Future<List<jooq.tables.pojos.DbArticle>> findManyByDbContent(Collection<String> values) {
+        return findManyByCondition(DbArticle.ARTICLE.CONTENT.in(values));
     }
 
     /**
      * Find records that have <code>content IN (values)</code> asynchronously limited by the given limit
      */
-    public Future<List<jooq.tables.pojos.DbArticle>> findManyByContent(Collection<String> values, int limit) {
-        return findManyByCondition(DbArticle.DB_ARTICLE.CONTENT.in(values),limit);
+    public Future<List<jooq.tables.pojos.DbArticle>> findManyByDbContent(Collection<String> values, int limit) {
+        return findManyByCondition(DbArticle.ARTICLE.CONTENT.in(values),limit);
     }
 
     /**
      * Find records that have <code>author_id IN (values)</code> asynchronously
      */
-    public Future<List<jooq.tables.pojos.DbArticle>> findManyByAuthorId(Collection<String> values) {
-        return findManyByCondition(DbArticle.DB_ARTICLE.AUTHOR_ID.in(values));
+    public Future<List<jooq.tables.pojos.DbArticle>> findManyByDbAuthorId(Collection<String> values) {
+        return findManyByCondition(DbArticle.ARTICLE.AUTHOR_ID.in(values));
     }
 
     /**
      * Find records that have <code>author_id IN (values)</code> asynchronously limited by the given limit
      */
-    public Future<List<jooq.tables.pojos.DbArticle>> findManyByAuthorId(Collection<String> values, int limit) {
-        return findManyByCondition(DbArticle.DB_ARTICLE.AUTHOR_ID.in(values),limit);
+    public Future<List<jooq.tables.pojos.DbArticle>> findManyByDbAuthorId(Collection<String> values, int limit) {
+        return findManyByCondition(DbArticle.ARTICLE.AUTHOR_ID.in(values),limit);
     }
 
     /**
      * Find records that have <code>version IN (values)</code> asynchronously
      */
-    public Future<List<jooq.tables.pojos.DbArticle>> findManyByVersion(Collection<Integer> values) {
-        return findManyByCondition(DbArticle.DB_ARTICLE.VERSION.in(values));
+    public Future<List<jooq.tables.pojos.DbArticle>> findManyByDbVersion(Collection<Integer> values) {
+        return findManyByCondition(DbArticle.ARTICLE.VERSION.in(values));
     }
 
     /**
      * Find records that have <code>version IN (values)</code> asynchronously limited by the given limit
      */
-    public Future<List<jooq.tables.pojos.DbArticle>> findManyByVersion(Collection<Integer> values, int limit) {
-        return findManyByCondition(DbArticle.DB_ARTICLE.VERSION.in(values),limit);
+    public Future<List<jooq.tables.pojos.DbArticle>> findManyByDbVersion(Collection<Integer> values, int limit) {
+        return findManyByCondition(DbArticle.ARTICLE.VERSION.in(values),limit);
     }
 
     @Override

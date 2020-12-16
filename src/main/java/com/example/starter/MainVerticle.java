@@ -13,7 +13,7 @@ import io.vertx.ext.web.sstore.SessionStore;
 import io.vertx.pgclient.PgConnectOptions;
 import io.vertx.pgclient.PgPool;
 import io.vertx.sqlclient.PoolOptions;
-import jooq.tables.daos.DbUserDao;
+import jooq.tables.daos.DbBlogUserDao;
 import org.jooq.Configuration;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DefaultConfiguration;
@@ -36,7 +36,7 @@ public class MainVerticle extends AbstractVerticle {
       SessionStore sessionStore = LocalSessionStore.create(vertx);
       SessionHandler sessionHandler = SessionHandler.create(sessionStore);
       Future<RouterBuilder> routerBuilder$ = RouterBuilder.create(vertx, "openapi.yaml");
-      AppAuthenticationProvider authenticationProvider = new AppAuthenticationProvider(new DbUserDao(configuration, pool));
+      AppAuthenticationProvider authenticationProvider = new AppAuthenticationProvider(new DbBlogUserDao(configuration, pool));
       Future<HttpServer> startServer$ = routerBuilder$.compose(routerBuilder -> {
         routerBuilder.rootHandler(routingContext -> {
           routingContext.response()

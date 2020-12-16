@@ -5,17 +5,17 @@ package jooq;
 
 
 import jooq.tables.DbArticle;
-import jooq.tables.DbUser;
-import jooq.tables.Permission;
-import jooq.tables.Role;
-import jooq.tables.RolesPermissions;
-import jooq.tables.UserRoles;
+import jooq.tables.DbBlogUser;
+import jooq.tables.DbPermission;
+import jooq.tables.DbRole;
+import jooq.tables.DbRolesPermissions;
+import jooq.tables.DbUserRoles;
 import jooq.tables.records.DbArticleRecord;
-import jooq.tables.records.DbUserRecord;
-import jooq.tables.records.PermissionRecord;
-import jooq.tables.records.RoleRecord;
-import jooq.tables.records.RolesPermissionsRecord;
-import jooq.tables.records.UserRolesRecord;
+import jooq.tables.records.DbBlogUserRecord;
+import jooq.tables.records.DbPermissionRecord;
+import jooq.tables.records.DbRoleRecord;
+import jooq.tables.records.DbRolesPermissionsRecord;
+import jooq.tables.records.DbUserRolesRecord;
 
 import org.jooq.ForeignKey;
 import org.jooq.TableField;
@@ -40,38 +40,38 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<DbArticleRecord> ARTICLE_PK = UniqueKeys0.ARTICLE_PK;
-    public static final UniqueKey<DbUserRecord> PK_USERNAME = UniqueKeys0.PK_USERNAME;
-    public static final UniqueKey<PermissionRecord> PERMISSION_PK = UniqueKeys0.PERMISSION_PK;
-    public static final UniqueKey<RoleRecord> ROLE_PK = UniqueKeys0.ROLE_PK;
-    public static final UniqueKey<UserRolesRecord> PK_USER_ROLES = UniqueKeys0.PK_USER_ROLES;
+    public static final UniqueKey<DbBlogUserRecord> PK_USERNAME = UniqueKeys0.PK_USERNAME;
+    public static final UniqueKey<DbPermissionRecord> PERMISSION_PK = UniqueKeys0.PERMISSION_PK;
+    public static final UniqueKey<DbRoleRecord> ROLE_PK = UniqueKeys0.ROLE_PK;
+    public static final UniqueKey<DbUserRolesRecord> PK_USER_ROLES = UniqueKeys0.PK_USER_ROLES;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final ForeignKey<DbArticleRecord, DbUserRecord> DB_ARTICLE__ARTICLE_USER_USERNAME_FK = ForeignKeys0.DB_ARTICLE__ARTICLE_USER_USERNAME_FK;
-    public static final ForeignKey<RolesPermissionsRecord, RoleRecord> ROLES_PERMISSIONS__ROLES_PERMISSIONS_ROLE_ID_FK = ForeignKeys0.ROLES_PERMISSIONS__ROLES_PERMISSIONS_ROLE_ID_FK;
-    public static final ForeignKey<RolesPermissionsRecord, PermissionRecord> ROLES_PERMISSIONS__ROLES_PERMISSIONS_PERMISSION_ID_FK = ForeignKeys0.ROLES_PERMISSIONS__ROLES_PERMISSIONS_PERMISSION_ID_FK;
-    public static final ForeignKey<UserRolesRecord, DbUserRecord> USER_ROLES__FK_USERNAME = ForeignKeys0.USER_ROLES__FK_USERNAME;
-    public static final ForeignKey<UserRolesRecord, RoleRecord> USER_ROLES__FK_ROLES = ForeignKeys0.USER_ROLES__FK_ROLES;
+    public static final ForeignKey<DbArticleRecord, DbBlogUserRecord> ARTICLE__ARTICLE_USER_USERNAME_FK = ForeignKeys0.ARTICLE__ARTICLE_USER_USERNAME_FK;
+    public static final ForeignKey<DbRolesPermissionsRecord, DbRoleRecord> ROLES_PERMISSIONS__ROLES_PERMISSIONS_ROLE_ID_FK = ForeignKeys0.ROLES_PERMISSIONS__ROLES_PERMISSIONS_ROLE_ID_FK;
+    public static final ForeignKey<DbRolesPermissionsRecord, DbPermissionRecord> ROLES_PERMISSIONS__ROLES_PERMISSIONS_PERMISSION_ID_FK = ForeignKeys0.ROLES_PERMISSIONS__ROLES_PERMISSIONS_PERMISSION_ID_FK;
+    public static final ForeignKey<DbUserRolesRecord, DbBlogUserRecord> USER_ROLES__FK_USERNAME = ForeignKeys0.USER_ROLES__FK_USERNAME;
+    public static final ForeignKey<DbUserRolesRecord, DbRoleRecord> USER_ROLES__FK_ROLES = ForeignKeys0.USER_ROLES__FK_ROLES;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
     private static class UniqueKeys0 {
-        public static final UniqueKey<DbArticleRecord> ARTICLE_PK = Internal.createUniqueKey(DbArticle.DB_ARTICLE, "article_pk", new TableField[] { DbArticle.DB_ARTICLE.ID }, true);
-        public static final UniqueKey<DbUserRecord> PK_USERNAME = Internal.createUniqueKey(DbUser.DB_USER, "pk_username", new TableField[] { DbUser.DB_USER.USERNAME }, true);
-        public static final UniqueKey<PermissionRecord> PERMISSION_PK = Internal.createUniqueKey(Permission.PERMISSION, "permission_pk", new TableField[] { Permission.PERMISSION.ID }, true);
-        public static final UniqueKey<RoleRecord> ROLE_PK = Internal.createUniqueKey(Role.ROLE, "role_pk", new TableField[] { Role.ROLE.ID }, true);
-        public static final UniqueKey<UserRolesRecord> PK_USER_ROLES = Internal.createUniqueKey(UserRoles.USER_ROLES, "pk_user_roles", new TableField[] { UserRoles.USER_ROLES.USERNAME, UserRoles.USER_ROLES.ROLE }, true);
+        public static final UniqueKey<DbArticleRecord> ARTICLE_PK = Internal.createUniqueKey(DbArticle.ARTICLE, "article_pk", new TableField[] { DbArticle.ARTICLE.ID }, true);
+        public static final UniqueKey<DbBlogUserRecord> PK_USERNAME = Internal.createUniqueKey(DbBlogUser.BLOG_USER, "pk_username", new TableField[] { DbBlogUser.BLOG_USER.USERNAME }, true);
+        public static final UniqueKey<DbPermissionRecord> PERMISSION_PK = Internal.createUniqueKey(DbPermission.PERMISSION, "permission_pk", new TableField[] { DbPermission.PERMISSION.ID }, true);
+        public static final UniqueKey<DbRoleRecord> ROLE_PK = Internal.createUniqueKey(DbRole.ROLE, "role_pk", new TableField[] { DbRole.ROLE.ID }, true);
+        public static final UniqueKey<DbUserRolesRecord> PK_USER_ROLES = Internal.createUniqueKey(DbUserRoles.USER_ROLES, "pk_user_roles", new TableField[] { DbUserRoles.USER_ROLES.USERNAME, DbUserRoles.USER_ROLES.ROLE }, true);
     }
 
     private static class ForeignKeys0 {
-        public static final ForeignKey<DbArticleRecord, DbUserRecord> DB_ARTICLE__ARTICLE_USER_USERNAME_FK = Internal.createForeignKey(Keys.PK_USERNAME, DbArticle.DB_ARTICLE, "article_user_username_fk", new TableField[] { DbArticle.DB_ARTICLE.AUTHOR_ID }, true);
-        public static final ForeignKey<RolesPermissionsRecord, RoleRecord> ROLES_PERMISSIONS__ROLES_PERMISSIONS_ROLE_ID_FK = Internal.createForeignKey(Keys.ROLE_PK, RolesPermissions.ROLES_PERMISSIONS, "roles_permissions_role_id_fk", new TableField[] { RolesPermissions.ROLES_PERMISSIONS.ROLE_ID }, true);
-        public static final ForeignKey<RolesPermissionsRecord, PermissionRecord> ROLES_PERMISSIONS__ROLES_PERMISSIONS_PERMISSION_ID_FK = Internal.createForeignKey(Keys.PERMISSION_PK, RolesPermissions.ROLES_PERMISSIONS, "roles_permissions_permission_id_fk", new TableField[] { RolesPermissions.ROLES_PERMISSIONS.PERMISSION_ID }, true);
-        public static final ForeignKey<UserRolesRecord, DbUserRecord> USER_ROLES__FK_USERNAME = Internal.createForeignKey(Keys.PK_USERNAME, UserRoles.USER_ROLES, "fk_username", new TableField[] { UserRoles.USER_ROLES.USERNAME }, true);
-        public static final ForeignKey<UserRolesRecord, RoleRecord> USER_ROLES__FK_ROLES = Internal.createForeignKey(Keys.ROLE_PK, UserRoles.USER_ROLES, "fk_roles", new TableField[] { UserRoles.USER_ROLES.ROLE }, true);
+        public static final ForeignKey<DbArticleRecord, DbBlogUserRecord> ARTICLE__ARTICLE_USER_USERNAME_FK = Internal.createForeignKey(Keys.PK_USERNAME, DbArticle.ARTICLE, "article_user_username_fk", new TableField[] { DbArticle.ARTICLE.AUTHOR_ID }, true);
+        public static final ForeignKey<DbRolesPermissionsRecord, DbRoleRecord> ROLES_PERMISSIONS__ROLES_PERMISSIONS_ROLE_ID_FK = Internal.createForeignKey(Keys.ROLE_PK, DbRolesPermissions.ROLES_PERMISSIONS, "roles_permissions_role_id_fk", new TableField[] { DbRolesPermissions.ROLES_PERMISSIONS.ROLE_ID }, true);
+        public static final ForeignKey<DbRolesPermissionsRecord, DbPermissionRecord> ROLES_PERMISSIONS__ROLES_PERMISSIONS_PERMISSION_ID_FK = Internal.createForeignKey(Keys.PERMISSION_PK, DbRolesPermissions.ROLES_PERMISSIONS, "roles_permissions_permission_id_fk", new TableField[] { DbRolesPermissions.ROLES_PERMISSIONS.PERMISSION_ID }, true);
+        public static final ForeignKey<DbUserRolesRecord, DbBlogUserRecord> USER_ROLES__FK_USERNAME = Internal.createForeignKey(Keys.PK_USERNAME, DbUserRoles.USER_ROLES, "fk_username", new TableField[] { DbUserRoles.USER_ROLES.USERNAME }, true);
+        public static final ForeignKey<DbUserRolesRecord, DbRoleRecord> USER_ROLES__FK_ROLES = Internal.createForeignKey(Keys.ROLE_PK, DbUserRoles.USER_ROLES, "fk_roles", new TableField[] { DbUserRoles.USER_ROLES.ROLE }, true);
     }
 }

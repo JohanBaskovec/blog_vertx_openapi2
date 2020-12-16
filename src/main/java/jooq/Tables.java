@@ -5,11 +5,11 @@ package jooq;
 
 
 import jooq.tables.DbArticle;
-import jooq.tables.DbUser;
-import jooq.tables.Permission;
-import jooq.tables.Role;
-import jooq.tables.RolesPermissions;
-import jooq.tables.UserRoles;
+import jooq.tables.DbBlogUser;
+import jooq.tables.DbPermission;
+import jooq.tables.DbRole;
+import jooq.tables.DbRolesPermissions;
+import jooq.tables.DbUserRoles;
 
 
 /**
@@ -19,32 +19,32 @@ import jooq.tables.UserRoles;
 public class Tables {
 
     /**
-     * The table <code>public.db_article</code>.
+     * The table <code>public.article</code>.
      */
-    public static final DbArticle DB_ARTICLE = DbArticle.DB_ARTICLE;
+    public static final DbArticle ARTICLE = DbArticle.ARTICLE;
 
     /**
-     * The table <code>public.db_user</code>.
+     * The table <code>public.blog_user</code>.
      */
-    public static final DbUser DB_USER = DbUser.DB_USER;
+    public static final DbBlogUser BLOG_USER = DbBlogUser.BLOG_USER;
 
     /**
      * The table <code>public.permission</code>.
      */
-    public static final Permission PERMISSION = Permission.PERMISSION;
+    public static final DbPermission PERMISSION = DbPermission.PERMISSION;
 
     /**
      * The table <code>public.role</code>.
      */
-    public static final Role ROLE = Role.ROLE;
+    public static final DbRole ROLE = DbRole.ROLE;
 
     /**
      * The table <code>public.roles_permissions</code>.
      */
-    public static final RolesPermissions ROLES_PERMISSIONS = RolesPermissions.ROLES_PERMISSIONS;
+    public static final DbRolesPermissions ROLES_PERMISSIONS = DbRolesPermissions.ROLES_PERMISSIONS;
 
     /**
      * The table <code>public.user_roles</code>.
      */
-    public static final UserRoles USER_ROLES = UserRoles.USER_ROLES;
+    public static final DbUserRoles USER_ROLES = DbUserRoles.USER_ROLES;
 }

@@ -51,7 +51,11 @@
       <groupId>io.vertx</groupId>
       <artifactId>vertx-auth-sql-client</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>io.github.jklingsporn</groupId>
+      <version>5.2.1</version>
+      <artifactId>vertx-jooq-generate</artifactId>
+    </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-junit5</artifactId>
@@ -115,6 +119,11 @@
             <artifactId>vertx-jooq-generate</artifactId>
             <version>5.2.1</version>
           </dependency>
+          <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>generator</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+          </dependency>
         </dependencies>
 
         <!-- Specify the plugin configuration.
@@ -158,7 +167,7 @@
 
 
             <strategy>
-              <name>io.github.jklingsporn.vertx.jooq.generate.VertxGeneratorStrategy</name>
+              <name>com.example.generator.JooqGeneratorStrategy</name>
             </strategy>
           </generator>
 

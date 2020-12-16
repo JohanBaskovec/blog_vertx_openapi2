@@ -19,9 +19,9 @@ public class RowMappers {
         };
     }
 
-    public static Function<Row,jooq.tables.pojos.DbUser> getDbUserMapper() {
+    public static Function<Row,jooq.tables.pojos.DbBlogUser> getDbBlogUserMapper() {
         return row -> {
-            jooq.tables.pojos.DbUser pojo = new jooq.tables.pojos.DbUser();
+            jooq.tables.pojos.DbBlogUser pojo = new jooq.tables.pojos.DbBlogUser();
             pojo.setUsername(row.getString("username"));
             pojo.setPassword(row.getString("password"));
             pojo.setPasswordSalt(row.getString("password_salt"));
@@ -30,25 +30,25 @@ public class RowMappers {
         };
     }
 
-    public static Function<Row,jooq.tables.pojos.Permission> getPermissionMapper() {
+    public static Function<Row,jooq.tables.pojos.DbPermission> getDbPermissionMapper() {
         return row -> {
-            jooq.tables.pojos.Permission pojo = new jooq.tables.pojos.Permission();
+            jooq.tables.pojos.DbPermission pojo = new jooq.tables.pojos.DbPermission();
             pojo.setId(row.getString("id"));
             return pojo;
         };
     }
 
-    public static Function<Row,jooq.tables.pojos.Role> getRoleMapper() {
+    public static Function<Row,jooq.tables.pojos.DbRole> getDbRoleMapper() {
         return row -> {
-            jooq.tables.pojos.Role pojo = new jooq.tables.pojos.Role();
+            jooq.tables.pojos.DbRole pojo = new jooq.tables.pojos.DbRole();
             pojo.setId(row.getString("id"));
             return pojo;
         };
     }
 
-    public static Function<Row,jooq.tables.pojos.UserRoles> getUserRolesMapper() {
+    public static Function<Row,jooq.tables.pojos.DbUserRoles> getDbUserRolesMapper() {
         return row -> {
-            jooq.tables.pojos.UserRoles pojo = new jooq.tables.pojos.UserRoles();
+            jooq.tables.pojos.DbUserRoles pojo = new jooq.tables.pojos.DbUserRoles();
             pojo.setUsername(row.getString("username"));
             pojo.setRole(row.getString("role"));
             return pojo;

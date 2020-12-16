@@ -10,7 +10,7 @@ import io.vertx.ext.web.validation.RequestParameters;
 import io.vertx.ext.web.validation.ValidationHandler;
 import io.vertx.pgclient.PgPool;
 import jooq.tables.daos.DbArticleDao;
-import jooq.tables.daos.DbUserDao;
+import jooq.tables.daos.DbBlogUserDao;
 import jooq.tables.pojos.DbArticle;
 import org.jooq.Configuration;
 import org.openapitools.vertxweb.server.model.Article;
@@ -66,10 +66,10 @@ public class ArticleController {
     dao.findAll().compose((List<DbArticle> dbArticles) -> {
       dbArticlesHolder.value = dbArticles;
       Set<String> authorIds = dbArticles.stream().map(DbArticle::getAuthorId).collect(Collectors.toSet());
-      DbUserDao dbUserDao = new DbUserDao(configuration, pool);
-      return dbUserDao.findManyByIds(authorIds);
-    }).compose(dbUsers -> {
-      Map<String, User> userMap = dbUsers.stream()
+      DbBlogUserDao dbBlogUserDao = new DbBlogUserDao(configuration, pool);
+      return dbBlogUserDao.findManyByIds(authorIds);
+    }).compose(dbBlogUsers -> {
+      Map<String, User> userMap = dbBlogUsers.stream()
         .map(userMapper::fromDb)
         .collect(Collectors.toMap(User::getUsername, user -> user));
 
@@ -95,12 +95,12 @@ public class ArticleController {
       }
       dbArticleHolder.value = dbArticle;
       String authorId = dbArticle.getAuthorId();
-      DbUserDao dbUserDao = new DbUserDao(configuration, pool);
-      return dbUserDao.findOneById(authorId);
-    }).compose(dbUser -> {
+      DbBlogUserDao dbBlogUserDao = new DbBlogUserDao(configuration, pool);
+      return dbBlogUserDao.findOneById(authorId);
+    }).compose(dbBlogUser -> {
       User user = null;
-      if (dbUser != null) {
-        user = userMapper.fromDb(dbUser);
+      if (dbBlogUser != null) {
+        user = userMapper.fromDb(dbBlogUser);
       }
       Article article = articleMapper.fromDb(dbArticleHolder.value);
       article.setAuthor(user);

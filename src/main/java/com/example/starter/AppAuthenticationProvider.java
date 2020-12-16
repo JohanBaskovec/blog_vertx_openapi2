@@ -11,14 +11,14 @@ import io.vertx.ext.auth.authentication.AuthenticationProvider;
 import io.vertx.ext.auth.authentication.CredentialValidationException;
 import io.vertx.ext.auth.authentication.Credentials;
 import io.vertx.ext.auth.authentication.UsernamePasswordCredentials;
-import jooq.tables.daos.DbUserDao;
-import jooq.tables.pojos.DbUser;
+import jooq.tables.daos.DbBlogUserDao;
+import jooq.tables.pojos.DbBlogUser;
 
 public class AppAuthenticationProvider implements AuthenticationProvider {
-  private final DbUserDao userDao;
+  private final DbBlogUserDao userDao;
   private final HashingStrategy strategy = HashingStrategy.load();
 
-  public AppAuthenticationProvider(DbUserDao userDao) {
+  public AppAuthenticationProvider(DbBlogUserDao userDao) {
     this.userDao = userDao;
   }
 
@@ -33,7 +33,7 @@ public class AppAuthenticationProvider implements AuthenticationProvider {
       UsernamePasswordCredentials authInfo = (UsernamePasswordCredentials) credentials;
       authInfo.checkValid(null);
 
-      Future<DbUser> user$ = userDao.findOneById(authInfo.getUsername());
+      Future<DbBlogUser> user$ = userDao.findOneById(authInfo.getUsername());
       user$.onSuccess(user -> {
         if (user == null) {
           // Unknown user/password
