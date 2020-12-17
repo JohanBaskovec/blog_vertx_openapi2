@@ -11,7 +11,7 @@ public class Article   {
   private String id;
   private String title;
   private String content;
-  private User author = null;
+  private User author;
   private Integer version;
 
   public Article () {

@@ -187,7 +187,7 @@ components:
           type: string
           nullable: false
         author:
-          $ref: '#/components/schemas/ObjectId'
+          $ref: '#/components/schemas/User'
         version:
           type: integer
           nullable: false
@@ -230,6 +230,18 @@ components:
         password:
           type: string
           nullable: false
+    Permission:
+      type: object
+      properties:
+        id:
+          type: string
+    Role:
+      type: object
+      properties:
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
     User:
       type: object
       required:
@@ -245,6 +257,10 @@ components:
         version:
           type: integer
           nullable: false
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
     HttpSession:
       type: object
       required:

@@ -43,6 +43,7 @@ public class Keys {
     public static final UniqueKey<DbBlogUserRecord> PK_USERNAME = UniqueKeys0.PK_USERNAME;
     public static final UniqueKey<DbPermissionRecord> PERMISSION_PK = UniqueKeys0.PERMISSION_PK;
     public static final UniqueKey<DbRoleRecord> ROLE_PK = UniqueKeys0.ROLE_PK;
+    public static final UniqueKey<DbRolesPermissionsRecord> ROLES_PERMISSIONS_PK = UniqueKeys0.ROLES_PERMISSIONS_PK;
     public static final UniqueKey<DbUserRolesRecord> PK_USER_ROLES = UniqueKeys0.PK_USER_ROLES;
 
     // -------------------------------------------------------------------------
@@ -64,6 +65,7 @@ public class Keys {
         public static final UniqueKey<DbBlogUserRecord> PK_USERNAME = Internal.createUniqueKey(DbBlogUser.BLOG_USER, "pk_username", new TableField[] { DbBlogUser.BLOG_USER.USERNAME }, true);
         public static final UniqueKey<DbPermissionRecord> PERMISSION_PK = Internal.createUniqueKey(DbPermission.PERMISSION, "permission_pk", new TableField[] { DbPermission.PERMISSION.ID }, true);
         public static final UniqueKey<DbRoleRecord> ROLE_PK = Internal.createUniqueKey(DbRole.ROLE, "role_pk", new TableField[] { DbRole.ROLE.ID }, true);
+        public static final UniqueKey<DbRolesPermissionsRecord> ROLES_PERMISSIONS_PK = Internal.createUniqueKey(DbRolesPermissions.ROLES_PERMISSIONS, "roles_permissions_pk", new TableField[] { DbRolesPermissions.ROLES_PERMISSIONS.ROLE_ID, DbRolesPermissions.ROLES_PERMISSIONS.PERMISSION_ID }, true);
         public static final UniqueKey<DbUserRolesRecord> PK_USER_ROLES = Internal.createUniqueKey(DbUserRoles.USER_ROLES, "pk_user_roles", new TableField[] { DbUserRoles.USER_ROLES.USERNAME, DbUserRoles.USER_ROLES.ROLE }, true);
     }
 

@@ -20,6 +20,7 @@ import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
+import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 
@@ -30,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DbRolesPermissions extends TableImpl<DbRolesPermissionsRecord> {
 
-    private static final long serialVersionUID = 1707306545;
+    private static final long serialVersionUID = 546445644;
 
     /**
      * The reference instance of <code>public.roles_permissions</code>
@@ -91,6 +92,16 @@ public class DbRolesPermissions extends TableImpl<DbRolesPermissionsRecord> {
     @Override
     public Schema getSchema() {
         return DbPublic.PUBLIC;
+    }
+
+    @Override
+    public UniqueKey<DbRolesPermissionsRecord> getPrimaryKey() {
+        return Keys.ROLES_PERMISSIONS_PK;
+    }
+
+    @Override
+    public List<UniqueKey<DbRolesPermissionsRecord>> getKeys() {
+        return Arrays.<UniqueKey<DbRolesPermissionsRecord>>asList(Keys.ROLES_PERMISSIONS_PK);
     }
 
     @Override

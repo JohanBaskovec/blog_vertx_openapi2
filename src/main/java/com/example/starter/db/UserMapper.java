@@ -8,7 +8,7 @@ public class UserMapper {
   public User fromDb(DbBlogUser dbBlogUser) {
     User user = new User();
     try {
-      PropertyUtils.copyProperties(user, dbBlogUser);
+      user.setUsername(dbBlogUser.getUsername());
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }

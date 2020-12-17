@@ -3,6 +3,9 @@ package org.openapitools.vertxweb.server.model;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
+import java.util.List;
+import org.openapitools.vertxweb.server.model.Role;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User   {
@@ -10,15 +13,17 @@ public class User   {
   private String username;
   private String password;
   private Integer version;
+  private List<Role> roles = new ArrayList<>();
 
   public User () {
 
   }
 
-  public User (String username, String password, Integer version) {
+  public User (String username, String password, Integer version, List<Role> roles) {
     this.username = username;
     this.password = password;
     this.version = version;
+    this.roles = roles;
   }
 
     
@@ -48,6 +53,15 @@ public class User   {
     this.version = version;
   }
 
+    
+  @JsonProperty("roles")
+  public List<Role> getRoles() {
+    return roles;
+  }
+  public void setRoles(List<Role> roles) {
+    this.roles = roles;
+  }
+
 
   @Override
   public boolean equals(Object o) {
@@ -60,12 +74,13 @@ public class User   {
     User user = (User) o;
     return Objects.equals(username, user.username) &&
         Objects.equals(password, user.password) &&
-        Objects.equals(version, user.version);
+        Objects.equals(version, user.version) &&
+        Objects.equals(roles, user.roles);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(username, password, version);
+    return Objects.hash(username, password, version, roles);
   }
 
   @Override
@@ -76,6 +91,7 @@ public class User   {
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    version: ").append(toIndentedString(version)).append("\n");
+    sb.append("    roles: ").append(toIndentedString(roles)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -1,10 +1,14 @@
 package com.example.starter;
 
-import io.vertx.core.*;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.auth.authorization.RoleBasedAuthorization;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.SessionHandler;
 import io.vertx.ext.web.openapi.RouterBuilder;
@@ -21,22 +25,23 @@ import org.jooq.impl.DefaultConfiguration;
 public class MainVerticle extends AbstractVerticle {
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
-    Configuration configuration = new DefaultConfiguration();
-    configuration.set(SQLDialect.POSTGRES);
-    String confFilePath = System.getenv("BLOG_CONF");
-    JsonObject config = new JsonObject(vertx.fileSystem().readFileBlocking(confFilePath));
-    PgConnectOptions pgConnectOptions = new PgConnectOptions(config.getJsonObject("database"));
-    PoolOptions poolOptions = new PoolOptions().setMaxSize(5);
-    PgPool pool = PgPool.pool(vertx, pgConnectOptions, poolOptions);
-    ArticleController articleController = new ArticleController(configuration, pool);
-    RegistrationController registrationController = new RegistrationController(configuration, pool);
-    HttpSessionController httpSessionController = new HttpSessionController(configuration, pool);
-
     try {
+      Configuration configuration = new DefaultConfiguration();
+      configuration.set(SQLDialect.POSTGRES);
+      String confFilePath = System.getenv("BLOG_CONF");
+      JsonObject config = new JsonObject(vertx.fileSystem().readFileBlocking(confFilePath));
+      PgConnectOptions pgConnectOptions = new PgConnectOptions(config.getJsonObject("database"));
+      PoolOptions poolOptions = new PoolOptions().setMaxSize(5);
+      PgPool pool = PgPool.pool(vertx, pgConnectOptions, poolOptions);
+      ArticleController articleController = new ArticleController(configuration, pool);
+      RegistrationController registrationController = new RegistrationController(configuration, pool);
+      HttpSessionController httpSessionController = new HttpSessionController(configuration, pool);
+
       SessionStore sessionStore = LocalSessionStore.create(vertx);
       SessionHandler sessionHandler = SessionHandler.create(sessionStore);
       Future<RouterBuilder> routerBuilder$ = RouterBuilder.create(vertx, "openapi.yaml");
       AppAuthenticationProvider authenticationProvider = new AppAuthenticationProvider(new DbBlogUserDao(configuration, pool));
+      AppAuthorizationProvider authorizationProvider = new AppAuthorizationProvider(configuration, pool);
       Future<HttpServer> startServer$ = routerBuilder$.compose(routerBuilder -> {
         routerBuilder.rootHandler(routingContext -> {
           routingContext.response()
@@ -51,10 +56,19 @@ public class MainVerticle extends AbstractVerticle {
           routingContext.next();
         });
         routerBuilder.rootHandler(sessionHandler);
-        routerBuilder.securityHandler("cookieAuth", new AppAuthenticationHandler(authenticationProvider));
+        routerBuilder.securityHandler(
+          "cookieAuth",
+          new AppAuthenticationHandler(authenticationProvider, configuration, pool));
+
         routerBuilder.operation("insertArticle")
+          .handler(
+            new AppAuthorizationHandler(RoleBasedAuthorization.create("admin"))
+              .addAuthorizationProvider(authorizationProvider))
           .handler(articleController::insertArticle);
         routerBuilder.operation("updateArticle")
+          .handler(
+            new AppAuthorizationHandler(RoleBasedAuthorization.create("admin"))
+              .addAuthorizationProvider(authorizationProvider))
           .handler(articleController::updateArticle);
         routerBuilder.operation("getAllArticles")
           .handler(articleController::getAllArticles);

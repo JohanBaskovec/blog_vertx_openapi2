@@ -46,6 +46,15 @@ public class RowMappers {
         };
     }
 
+    public static Function<Row,jooq.tables.pojos.DbRolesPermissions> getDbRolesPermissionsMapper() {
+        return row -> {
+            jooq.tables.pojos.DbRolesPermissions pojo = new jooq.tables.pojos.DbRolesPermissions();
+            pojo.setRoleId(row.getString("role_id"));
+            pojo.setPermissionId(row.getString("permission_id"));
+            return pojo;
+        };
+    }
+
     public static Function<Row,jooq.tables.pojos.DbUserRoles> getDbUserRolesMapper() {
         return row -> {
             jooq.tables.pojos.DbUserRoles pojo = new jooq.tables.pojos.DbUserRoles();
