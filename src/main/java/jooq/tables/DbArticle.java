@@ -4,6 +4,7 @@
 package jooq.tables;
 
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DbArticle extends TableImpl<DbArticleRecord> {
 
-    private static final long serialVersionUID = -34446101;
+    private static final long serialVersionUID = -716488951;
 
     /**
      * The reference instance of <code>public.article</code>
@@ -72,6 +73,16 @@ public class DbArticle extends TableImpl<DbArticleRecord> {
      * The column <code>public.article.version</code>.
      */
     public final TableField<DbArticleRecord, Integer> VERSION = createField(DSL.name("version"), org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.article.creation_time</code>.
+     */
+    public final TableField<DbArticleRecord, LocalDateTime> CREATION_TIME = createField(DSL.name("creation_time"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>public.article.last_modification_time</code>.
+     */
+    public final TableField<DbArticleRecord, LocalDateTime> LAST_MODIFICATION_TIME = createField(DSL.name("last_modification_time"), org.jooq.impl.SQLDataType.LOCALDATETIME, this, "");
 
     /**
      * Create a <code>public.article</code> table reference
@@ -162,11 +173,11 @@ public class DbArticle extends TableImpl<DbArticleRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<String, String, String, String, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row7<String, String, String, String, Integer, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

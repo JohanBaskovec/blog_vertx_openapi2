@@ -6,6 +6,9 @@ package jooq.tables.daos;
 
 import io.github.jklingsporn.vertx.jooq.shared.reactive.AbstractReactiveVertxDAO;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
+
 import jooq.tables.DbRole;
 import jooq.tables.records.DbRoleRecord;
 
@@ -32,6 +35,34 @@ public class DbRoleDao extends AbstractReactiveVertxDAO<DbRoleRecord, jooq.table
     @Override
     protected String getId(jooq.tables.pojos.DbRole object) {
         return object.getId();
+    }
+
+    /**
+     * Find records that have <code>last_modification_time IN (values)</code> asynchronously
+     */
+    public Future<List<jooq.tables.pojos.DbRole>> findManyByDbLastModificationTime(Collection<LocalDateTime> values) {
+        return findManyByCondition(DbRole.ROLE.LAST_MODIFICATION_TIME.in(values));
+    }
+
+    /**
+     * Find records that have <code>last_modification_time IN (values)</code> asynchronously limited by the given limit
+     */
+    public Future<List<jooq.tables.pojos.DbRole>> findManyByDbLastModificationTime(Collection<LocalDateTime> values, int limit) {
+        return findManyByCondition(DbRole.ROLE.LAST_MODIFICATION_TIME.in(values),limit);
+    }
+
+    /**
+     * Find records that have <code>creation_time IN (values)</code> asynchronously
+     */
+    public Future<List<jooq.tables.pojos.DbRole>> findManyByDbCreationTime(Collection<LocalDateTime> values) {
+        return findManyByCondition(DbRole.ROLE.CREATION_TIME.in(values));
+    }
+
+    /**
+     * Find records that have <code>creation_time IN (values)</code> asynchronously limited by the given limit
+     */
+    public Future<List<jooq.tables.pojos.DbRole>> findManyByDbCreationTime(Collection<LocalDateTime> values, int limit) {
+        return findManyByCondition(DbRole.ROLE.CREATION_TIME.in(values),limit);
     }
 
     @Override

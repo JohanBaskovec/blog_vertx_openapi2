@@ -3,9 +3,10 @@ package org.openapitools.vertxweb.server.model;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.openapitools.vertxweb.server.model.ObjectBase;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Permission   {
+public class Permission extends ObjectBase  {
   
   private String id;
 
@@ -48,7 +49,7 @@ public class Permission   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Permission {\n");
-    
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("}");
     return sb.toString();

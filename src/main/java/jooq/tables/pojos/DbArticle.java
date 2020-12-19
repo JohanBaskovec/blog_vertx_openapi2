@@ -6,6 +6,8 @@ package jooq.tables.pojos;
 
 import io.github.jklingsporn.vertx.jooq.shared.internal.VertxPojo;
 
+import java.time.LocalDateTime;
+
 import jooq.tables.interfaces.DbIArticle;
 
 
@@ -15,13 +17,15 @@ import jooq.tables.interfaces.DbIArticle;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DbArticle implements VertxPojo, DbIArticle {
 
-    private static final long serialVersionUID = 2037295526;
+    private static final long serialVersionUID = -1574009880;
 
-    private String  id;
-    private String  title;
-    private String  content;
-    private String  authorId;
-    private Integer version;
+    private String        id;
+    private String        title;
+    private String        content;
+    private String        authorId;
+    private Integer       version;
+    private LocalDateTime creationTime;
+    private LocalDateTime lastModificationTime;
 
     public DbArticle() {}
 
@@ -31,20 +35,26 @@ public class DbArticle implements VertxPojo, DbIArticle {
         this.content = value.getContent();
         this.authorId = value.getAuthorId();
         this.version = value.getVersion();
+        this.creationTime = value.getCreationTime();
+        this.lastModificationTime = value.getLastModificationTime();
     }
 
     public DbArticle(
-        String  id,
-        String  title,
-        String  content,
-        String  authorId,
-        Integer version
+        String        id,
+        String        title,
+        String        content,
+        String        authorId,
+        Integer       version,
+        LocalDateTime creationTime,
+        LocalDateTime lastModificationTime
     ) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.authorId = authorId;
         this.version = version;
+        this.creationTime = creationTime;
+        this.lastModificationTime = lastModificationTime;
     }
 
     public DbArticle(io.vertx.core.json.JsonObject json) {
@@ -108,6 +118,28 @@ public class DbArticle implements VertxPojo, DbIArticle {
     }
 
     @Override
+    public LocalDateTime getCreationTime() {
+        return this.creationTime;
+    }
+
+    @Override
+    public DbArticle setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
+        return this;
+    }
+
+    @Override
+    public LocalDateTime getLastModificationTime() {
+        return this.lastModificationTime;
+    }
+
+    @Override
+    public DbArticle setLastModificationTime(LocalDateTime lastModificationTime) {
+        this.lastModificationTime = lastModificationTime;
+        return this;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DbArticle (");
 
@@ -116,6 +148,8 @@ public class DbArticle implements VertxPojo, DbIArticle {
         sb.append(", ").append(content);
         sb.append(", ").append(authorId);
         sb.append(", ").append(version);
+        sb.append(", ").append(creationTime);
+        sb.append(", ").append(lastModificationTime);
 
         sb.append(")");
         return sb.toString();
@@ -132,6 +166,8 @@ public class DbArticle implements VertxPojo, DbIArticle {
         setContent(from.getContent());
         setAuthorId(from.getAuthorId());
         setVersion(from.getVersion());
+        setCreationTime(from.getCreationTime());
+        setLastModificationTime(from.getLastModificationTime());
     }
 
     @Override

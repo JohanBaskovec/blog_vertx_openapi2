@@ -6,6 +6,8 @@ package jooq.tables.pojos;
 
 import io.github.jklingsporn.vertx.jooq.shared.internal.VertxPojo;
 
+import java.time.LocalDateTime;
+
 import jooq.tables.interfaces.DbIRole;
 
 
@@ -15,20 +17,28 @@ import jooq.tables.interfaces.DbIRole;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DbRole implements VertxPojo, DbIRole {
 
-    private static final long serialVersionUID = -1425052457;
+    private static final long serialVersionUID = 8774145;
 
-    private String id;
+    private String        id;
+    private LocalDateTime lastModificationTime;
+    private LocalDateTime creationTime;
 
     public DbRole() {}
 
     public DbRole(DbIRole value) {
         this.id = value.getId();
+        this.lastModificationTime = value.getLastModificationTime();
+        this.creationTime = value.getCreationTime();
     }
 
     public DbRole(
-        String id
+        String        id,
+        LocalDateTime lastModificationTime,
+        LocalDateTime creationTime
     ) {
         this.id = id;
+        this.lastModificationTime = lastModificationTime;
+        this.creationTime = creationTime;
     }
 
     public DbRole(io.vertx.core.json.JsonObject json) {
@@ -48,10 +58,34 @@ public class DbRole implements VertxPojo, DbIRole {
     }
 
     @Override
+    public LocalDateTime getLastModificationTime() {
+        return this.lastModificationTime;
+    }
+
+    @Override
+    public DbRole setLastModificationTime(LocalDateTime lastModificationTime) {
+        this.lastModificationTime = lastModificationTime;
+        return this;
+    }
+
+    @Override
+    public LocalDateTime getCreationTime() {
+        return this.creationTime;
+    }
+
+    @Override
+    public DbRole setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
+        return this;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DbRole (");
 
         sb.append(id);
+        sb.append(", ").append(lastModificationTime);
+        sb.append(", ").append(creationTime);
 
         sb.append(")");
         return sb.toString();
@@ -64,6 +98,8 @@ public class DbRole implements VertxPojo, DbIRole {
     @Override
     public void from(DbIRole from) {
         setId(from.getId());
+        setLastModificationTime(from.getLastModificationTime());
+        setCreationTime(from.getCreationTime());
     }
 
     @Override

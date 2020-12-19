@@ -145,6 +145,21 @@ components:
         message:
           type: string
           nullable: false
+    ObjectBase:
+      type: object
+      required:
+        - id
+        - creationTime
+      properties:
+        id:
+          $ref: '#/components/schemas/ObjectId'
+        lastModificationTime:
+          type: integer
+          format: int64
+        creationTime:
+          type: integer
+          format: int64
+          nullable: false
     ValidationError:
       type: object
       required:
@@ -171,26 +186,26 @@ components:
           nullable: false
     Article:
       type: object
-      required:
-        - id
-        - title
-        - content
-        - version
-        - author
-      properties:
-        id:
-          $ref: '#/components/schemas/ObjectId'
-        title:
-          type: string
-          nullable: false
-        content:
-          type: string
-          nullable: false
-        author:
-          $ref: '#/components/schemas/User'
-        version:
-          type: integer
-          nullable: false
+      allOf:
+        - $ref: '#/components/schemas/ObjectBase'
+        - type: object
+          required:
+            - title
+            - content
+            - version
+            - author
+          properties:
+            title:
+              type: string
+              nullable: false
+            content:
+              type: string
+              nullable: false
+            author:
+              $ref: '#/components/schemas/User'
+            version:
+              type: integer
+              nullable: false
     ArticleFormData:
       type: object
       required:
@@ -232,11 +247,15 @@ components:
           nullable: false
     Permission:
       type: object
+      allOf:
+        - $ref: '#/components/schemas/ObjectBase'
       properties:
         id:
           type: string
     Role:
       type: object
+      allOf:
+        - $ref: '#/components/schemas/ObjectBase'
       properties:
         permissions:
           type: array
@@ -244,23 +263,26 @@ components:
             $ref: '#/components/schemas/Permission'
     User:
       type: object
-      required:
-        - username
-        - version
-      properties:
-        username:
-          type: string
-          nullable: false
-        password:
-          type: string
-          nullable: true
-        version:
-          type: integer
-          nullable: false
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/Role'
+      allOf:
+        - $ref: '#/components/schemas/ObjectBase'
+        - type: object
+          required:
+            - username
+            - version
+          properties:
+            username:
+              type: string
+              nullable: false
+            password:
+              type: string
+              nullable: true
+            version:
+              type: integer
+              nullable: false
+            roles:
+              type: array
+              items:
+                $ref: '#/components/schemas/Role'
     HttpSession:
       type: object
       required:

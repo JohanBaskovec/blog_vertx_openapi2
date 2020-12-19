@@ -5,10 +5,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
+import org.openapitools.vertxweb.server.model.ObjectBase;
 import org.openapitools.vertxweb.server.model.Permission;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Role   {
+public class Role extends ObjectBase  {
   
   private List<Permission> permissions = new ArrayList<>();
 
@@ -51,7 +52,7 @@ public class Role   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Role {\n");
-    
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
     sb.append("    permissions: ").append(toIndentedString(permissions)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -8,6 +8,7 @@ import io.github.jklingsporn.vertx.jooq.shared.UnexpectedJsonValueType;
 import io.github.jklingsporn.vertx.jooq.shared.internal.VertxPojo;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 
 /**
@@ -25,6 +26,26 @@ public interface DbIPermission extends VertxPojo, Serializable {
      * Getter for <code>public.permission.id</code>.
      */
     public String getId();
+
+    /**
+     * Setter for <code>public.permission.last_modification_time</code>.
+     */
+    public DbIPermission setLastModificationTime(LocalDateTime value);
+
+    /**
+     * Getter for <code>public.permission.last_modification_time</code>.
+     */
+    public LocalDateTime getLastModificationTime();
+
+    /**
+     * Setter for <code>public.permission.creation_time</code>.
+     */
+    public DbIPermission setCreationTime(LocalDateTime value);
+
+    /**
+     * Getter for <code>public.permission.creation_time</code>.
+     */
+    public LocalDateTime getCreationTime();
 
     // -------------------------------------------------------------------------
     // FROM and INTO
@@ -47,6 +68,18 @@ public interface DbIPermission extends VertxPojo, Serializable {
         } catch (java.lang.ClassCastException e) {
             throw new UnexpectedJsonValueType("id","java.lang.String",e);
         }
+        try {
+            String last_modification_timeString = json.getString("last_modification_time");
+            setLastModificationTime(last_modification_timeString == null?null:java.time.LocalDateTime.parse(last_modification_timeString));
+        } catch (java.lang.ClassCastException e) {
+            throw new UnexpectedJsonValueType("last_modification_time","java.time.LocalDateTime",e);
+        }
+        try {
+            String creation_timeString = json.getString("creation_time");
+            setCreationTime(creation_timeString == null?null:java.time.LocalDateTime.parse(creation_timeString));
+        } catch (java.lang.ClassCastException e) {
+            throw new UnexpectedJsonValueType("creation_time","java.time.LocalDateTime",e);
+        }
         return this;
     }
 
@@ -55,6 +88,8 @@ public interface DbIPermission extends VertxPojo, Serializable {
     public default io.vertx.core.json.JsonObject toJson() {
         io.vertx.core.json.JsonObject json = new io.vertx.core.json.JsonObject();
         json.put("id",getId());
+        json.put("last_modification_time",getLastModificationTime()==null?null:getLastModificationTime().toString());
+        json.put("creation_time",getCreationTime()==null?null:getCreationTime().toString());
         return json;
     }
 

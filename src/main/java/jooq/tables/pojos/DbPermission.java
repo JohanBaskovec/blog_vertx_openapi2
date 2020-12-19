@@ -6,6 +6,8 @@ package jooq.tables.pojos;
 
 import io.github.jklingsporn.vertx.jooq.shared.internal.VertxPojo;
 
+import java.time.LocalDateTime;
+
 import jooq.tables.interfaces.DbIPermission;
 
 
@@ -15,20 +17,28 @@ import jooq.tables.interfaces.DbIPermission;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DbPermission implements VertxPojo, DbIPermission {
 
-    private static final long serialVersionUID = -805591355;
+    private static final long serialVersionUID = -559646815;
 
-    private String id;
+    private String        id;
+    private LocalDateTime lastModificationTime;
+    private LocalDateTime creationTime;
 
     public DbPermission() {}
 
     public DbPermission(DbIPermission value) {
         this.id = value.getId();
+        this.lastModificationTime = value.getLastModificationTime();
+        this.creationTime = value.getCreationTime();
     }
 
     public DbPermission(
-        String id
+        String        id,
+        LocalDateTime lastModificationTime,
+        LocalDateTime creationTime
     ) {
         this.id = id;
+        this.lastModificationTime = lastModificationTime;
+        this.creationTime = creationTime;
     }
 
     public DbPermission(io.vertx.core.json.JsonObject json) {
@@ -48,10 +58,34 @@ public class DbPermission implements VertxPojo, DbIPermission {
     }
 
     @Override
+    public LocalDateTime getLastModificationTime() {
+        return this.lastModificationTime;
+    }
+
+    @Override
+    public DbPermission setLastModificationTime(LocalDateTime lastModificationTime) {
+        this.lastModificationTime = lastModificationTime;
+        return this;
+    }
+
+    @Override
+    public LocalDateTime getCreationTime() {
+        return this.creationTime;
+    }
+
+    @Override
+    public DbPermission setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
+        return this;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DbPermission (");
 
         sb.append(id);
+        sb.append(", ").append(lastModificationTime);
+        sb.append(", ").append(creationTime);
 
         sb.append(")");
         return sb.toString();
@@ -64,6 +98,8 @@ public class DbPermission implements VertxPojo, DbIPermission {
     @Override
     public void from(DbIPermission from) {
         setId(from.getId());
+        setLastModificationTime(from.getLastModificationTime());
+        setCreationTime(from.getCreationTime());
     }
 
     @Override

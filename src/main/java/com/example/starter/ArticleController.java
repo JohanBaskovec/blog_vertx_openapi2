@@ -16,6 +16,7 @@ import org.jooq.Configuration;
 import org.openapitools.vertxweb.server.model.Article;
 import org.openapitools.vertxweb.server.model.User;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,7 @@ public class ArticleController {
     dao.findOneById(article.getId()).compose(dbArticle -> {
       dbArticle.setContent(article.getContent());
       dbArticle.setTitle(article.getTitle());
+      dbArticle.setLastModificationTime(LocalDateTime.now());
       return dao.update(dbArticle);
     }).onSuccess((Integer i) -> routingContext.response().setStatusCode(204).end())
       .onFailure(routingContext::fail);

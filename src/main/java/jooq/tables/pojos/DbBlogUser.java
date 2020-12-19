@@ -6,6 +6,8 @@ package jooq.tables.pojos;
 
 import io.github.jklingsporn.vertx.jooq.shared.internal.VertxPojo;
 
+import java.time.LocalDateTime;
+
 import jooq.tables.interfaces.DbIBlogUser;
 
 
@@ -15,12 +17,14 @@ import jooq.tables.interfaces.DbIBlogUser;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DbBlogUser implements VertxPojo, DbIBlogUser {
 
-    private static final long serialVersionUID = -1904255402;
+    private static final long serialVersionUID = -1652123982;
 
-    private String  username;
-    private String  password;
-    private String  passwordSalt;
-    private Integer version;
+    private String        username;
+    private String        password;
+    private String        passwordSalt;
+    private Integer       version;
+    private LocalDateTime creationTime;
+    private LocalDateTime lastModificationTime;
 
     public DbBlogUser() {}
 
@@ -29,18 +33,24 @@ public class DbBlogUser implements VertxPojo, DbIBlogUser {
         this.password = value.getPassword();
         this.passwordSalt = value.getPasswordSalt();
         this.version = value.getVersion();
+        this.creationTime = value.getCreationTime();
+        this.lastModificationTime = value.getLastModificationTime();
     }
 
     public DbBlogUser(
-        String  username,
-        String  password,
-        String  passwordSalt,
-        Integer version
+        String        username,
+        String        password,
+        String        passwordSalt,
+        Integer       version,
+        LocalDateTime creationTime,
+        LocalDateTime lastModificationTime
     ) {
         this.username = username;
         this.password = password;
         this.passwordSalt = passwordSalt;
         this.version = version;
+        this.creationTime = creationTime;
+        this.lastModificationTime = lastModificationTime;
     }
 
     public DbBlogUser(io.vertx.core.json.JsonObject json) {
@@ -93,6 +103,28 @@ public class DbBlogUser implements VertxPojo, DbIBlogUser {
     }
 
     @Override
+    public LocalDateTime getCreationTime() {
+        return this.creationTime;
+    }
+
+    @Override
+    public DbBlogUser setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
+        return this;
+    }
+
+    @Override
+    public LocalDateTime getLastModificationTime() {
+        return this.lastModificationTime;
+    }
+
+    @Override
+    public DbBlogUser setLastModificationTime(LocalDateTime lastModificationTime) {
+        this.lastModificationTime = lastModificationTime;
+        return this;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DbBlogUser (");
 
@@ -100,6 +132,8 @@ public class DbBlogUser implements VertxPojo, DbIBlogUser {
         sb.append(", ").append(password);
         sb.append(", ").append(passwordSalt);
         sb.append(", ").append(version);
+        sb.append(", ").append(creationTime);
+        sb.append(", ").append(lastModificationTime);
 
         sb.append(")");
         return sb.toString();
@@ -115,6 +149,8 @@ public class DbBlogUser implements VertxPojo, DbIBlogUser {
         setPassword(from.getPassword());
         setPasswordSalt(from.getPasswordSalt());
         setVersion(from.getVersion());
+        setCreationTime(from.getCreationTime());
+        setLastModificationTime(from.getLastModificationTime());
     }
 
     @Override
