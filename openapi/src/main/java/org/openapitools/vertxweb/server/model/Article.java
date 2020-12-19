@@ -3,12 +3,16 @@ package org.openapitools.vertxweb.server.model;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.openapitools.vertxweb.server.model.ArticleAllOf;
+import org.openapitools.vertxweb.server.model.ObjectBase;
 import org.openapitools.vertxweb.server.model.User;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Article   {
   
   private String id;
+  private Long lastModificationTime;
+  private Long creationTime;
   private String title;
   private String content;
   private User author;
@@ -18,8 +22,10 @@ public class Article   {
 
   }
 
-  public Article (String id, String title, String content, User author, Integer version) {
+  public Article (String id, Long lastModificationTime, Long creationTime, String title, String content, User author, Integer version) {
     this.id = id;
+    this.lastModificationTime = lastModificationTime;
+    this.creationTime = creationTime;
     this.title = title;
     this.content = content;
     this.author = author;
@@ -33,6 +39,24 @@ public class Article   {
   }
   public void setId(String id) {
     this.id = id;
+  }
+
+    
+  @JsonProperty("lastModificationTime")
+  public Long getLastModificationTime() {
+    return lastModificationTime;
+  }
+  public void setLastModificationTime(Long lastModificationTime) {
+    this.lastModificationTime = lastModificationTime;
+  }
+
+    
+  @JsonProperty("creationTime")
+  public Long getCreationTime() {
+    return creationTime;
+  }
+  public void setCreationTime(Long creationTime) {
+    this.creationTime = creationTime;
   }
 
     
@@ -82,6 +106,8 @@ public class Article   {
     }
     Article article = (Article) o;
     return Objects.equals(id, article.id) &&
+        Objects.equals(lastModificationTime, article.lastModificationTime) &&
+        Objects.equals(creationTime, article.creationTime) &&
         Objects.equals(title, article.title) &&
         Objects.equals(content, article.content) &&
         Objects.equals(author, article.author) &&
@@ -90,7 +116,7 @@ public class Article   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, title, content, author, version);
+    return Objects.hash(id, lastModificationTime, creationTime, title, content, author, version);
   }
 
   @Override
@@ -99,6 +125,8 @@ public class Article   {
     sb.append("class Article {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    lastModificationTime: ").append(toIndentedString(lastModificationTime)).append("\n");
+    sb.append("    creationTime: ").append(toIndentedString(creationTime)).append("\n");
     sb.append("    title: ").append(toIndentedString(title)).append("\n");
     sb.append("    content: ").append(toIndentedString(content)).append("\n");
     sb.append("    author: ").append(toIndentedString(author)).append("\n");
