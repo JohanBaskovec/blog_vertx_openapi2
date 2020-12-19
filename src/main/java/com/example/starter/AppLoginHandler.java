@@ -66,28 +66,7 @@ public class AppLoginHandler extends AuthenticationHandlerImpl<AppAuthentication
     try {
       AppUser sessionUser = (AppUser) ctx.user();
       authorizationProvider.getAuthorizations(sessionUser)
-        .compose((Void result) -> {
-          User user = new User();
-          user.setUsername(sessionUser.getUsername());
-          Set<io.vertx.ext.auth.authorization.Authorization> vertxAuthorizationList = sessionUser.authorizations().get("jooq-client");
-          List<Authorization> authorizations = new ArrayList<>();
-          for (io.vertx.ext.auth.authorization.Authorization auth : vertxAuthorizationList) {
-            if (auth instanceof RoleBasedAuthorization) {
-              String roleString = ((RoleBasedAuthorization) auth).getRole();
-              RoleAuthorization roleAuthorization = new RoleAuthorization();
-              roleAuthorization.setRole(roleString);
-              roleAuthorization.setType("role");
-              authorizations.add(roleAuthorization);
-            } else if (auth instanceof PermissionBasedAuthorization) {
-              String permissionString = ((PermissionBasedAuthorization) auth).getPermission();
-              PermissionAuthorization permissionAuthorization = new PermissionAuthorization(permissionString);
-              permissionAuthorization.setType("permission");
-              authorizations.add(permissionAuthorization);
-            }
-          }
-          user.setAuthorizations(authorizations);
-          return Future.succeededFuture(user);
-        })
+        .compose((Void result) -> UserService.getAuthenticatedUser(ctx))
         .onSuccess(ctx::json)
         .onFailure(ctx::fail);
     } catch (Throwable t) {

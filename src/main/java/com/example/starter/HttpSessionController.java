@@ -16,14 +16,13 @@ public class HttpSessionController {
   }
 
   public void getCurrentAuthenticatedUser(RoutingContext routingContext) {
-    AppUser sessionUser = (AppUser) routingContext.user();
-    DbBlogUserDao dbBlogUserDao = new DbBlogUserDao(configuration, pool);
-    dbBlogUserDao.findOneById(sessionUser.principal().getString("username"))
-      .onSuccess(dbBlogUser -> {
-        User user = new User();
-        user.setUsername(dbBlogUser.getUsername());
-        routingContext.json(user);
-      }).onFailure(t -> routingContext.fail(t));
+    try {
+        UserService.getAuthenticatedUser(routingContext)
+        .onSuccess(routingContext::json)
+        .onFailure(routingContext::fail);
+    } catch (Throwable t) {
+      routingContext.fail(t);
+    }
   }
 
   public void logout(RoutingContext routingContext) {

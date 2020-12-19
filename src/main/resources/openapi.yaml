@@ -285,27 +285,10 @@ components:
           nullable: false
         authorizations:
           type: array
+          nullable: false
           items:
             $ref: '#/components/schemas/Authorization'
 
-#            oneOf:
-#              - $ref: '#/components/schemas/RoleAuthorization'
-#              - $ref: '#/components/schemas/PermissionAuthorization'
-#            discriminator:
-#              propertyName: type
-#              mapping:
-#                role: '#/components/schemas/RoleAuthorization'
-#                permission: '#/components/schemas/PermissionAuthorization'
-
-#    Authorization:
-#      oneOf:
-#        - $ref: '#/components/schemas/RoleAuthorization'
-#        - $ref: '#/components/schemas/PermissionAuthorization'
-#      discriminator:
-#        propertyName: type
-#        mapping:
-#          role: '#/components/schemas/RoleAuthorization'
-#          permission: '#/components/schemas/PermissionAuthorization'
     Authorization:
       type: object
       required:
