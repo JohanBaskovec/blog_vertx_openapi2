@@ -16,10 +16,10 @@ import jooq.tables.pojos.DbRole;
 import jooq.tables.pojos.DbRolesPermissions;
 import jooq.tables.pojos.DbUserRoles;
 import org.jooq.Configuration;
+import org.openapitools.vertxweb.server.model.Role;
+import org.openapitools.vertxweb.server.model.Permission;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AppAuthorizationProvider implements AuthorizationProvider {
@@ -42,7 +42,6 @@ public class AppAuthorizationProvider implements AuthorizationProvider {
     String username = appUser.getUsername();
     if (username != null) {
       Set<Authorization> authorizations = new HashSet<>();
-      //Map<String, Role> roles = new HashMap<>();
       DbUserRolesDao dbUserRolesDao = new DbUserRolesDao(jooqConfiguration, pool);
       dbUserRolesDao.findManyByCondition(jooq.tables.DbUserRoles.USER_ROLES.USERNAME.eq(username))
         .compose((List<DbUserRoles> userRoles) -> {
@@ -54,7 +53,6 @@ public class AppAuthorizationProvider implements AuthorizationProvider {
           List<String> roleIds = dbRoles.stream().map(DbRole::getId).collect(Collectors.toList());
           for (String id : roleIds) {
             authorizations.add(RoleBasedAuthorization.create(id));
-            //roles.put(id, new Role());
           }
           DbRolesPermissionsDao rolesPermissionsDao = new DbRolesPermissionsDao(jooqConfiguration, pool);
           return rolesPermissionsDao.findManyByCondition(jooq.tables.DbRolesPermissions.ROLES_PERMISSIONS.ROLE_ID.in(roleIds));
@@ -62,7 +60,6 @@ public class AppAuthorizationProvider implements AuthorizationProvider {
         .<Void>compose((List<DbRolesPermissions> dbRolesPermissions) -> {
           for (DbRolesPermissions drp : dbRolesPermissions) {
             authorizations.add(PermissionBasedAuthorization.create(drp.getPermissionId()));
-            //roles.get(drp.getRoleId()).getPermissions().add(new Permission(drp.getPermissionId()));
           }
           user.authorizations().add(getId(), authorizations);
           return Future.succeededFuture();

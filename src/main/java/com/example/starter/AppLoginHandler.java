@@ -9,18 +9,30 @@ import io.vertx.core.impl.NoStackTraceThrowable;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.authentication.Credentials;
 import io.vertx.ext.auth.authentication.UsernamePasswordCredentials;
+import io.vertx.ext.auth.authorization.PermissionBasedAuthorization;
+import io.vertx.ext.auth.authorization.RoleBasedAuthorization;
+import org.openapitools.vertxweb.server.model.Authorization;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.impl.AuthenticationHandlerImpl;
 import io.vertx.ext.web.handler.impl.HttpStatusException;
 import io.vertx.ext.web.impl.RoutingContextInternal;
+import org.openapitools.vertxweb.server.model.PermissionAuthorization;
+import org.openapitools.vertxweb.server.model.RoleAuthorization;
 import org.openapitools.vertxweb.server.model.User;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class AppLoginHandler extends AuthenticationHandlerImpl<AppAuthenticationProvider> {
   static final HttpStatusException UNAUTHORIZED = new HttpStatusException(401);
   static final HttpStatusException BAD_REQUEST = new HttpStatusException(400);
   static final HttpStatusException BAD_METHOD = new HttpStatusException(405);
-  public AppLoginHandler(AppAuthenticationProvider authProvider) {
+  private final AppAuthorizationProvider authorizationProvider;
+
+  public AppLoginHandler(AppAuthenticationProvider authProvider, AppAuthorizationProvider authorizationProvider) {
     super(authProvider);
+    this.authorizationProvider = authorizationProvider;
   }
 
   @Override
@@ -52,10 +64,31 @@ public class AppLoginHandler extends AuthenticationHandlerImpl<AppAuthentication
   @Override
   public void postAuthentication(RoutingContext ctx) {
     try {
-      User user = new User();
       AppUser sessionUser = (AppUser) ctx.user();
-      user.setUsername(sessionUser.getUsername());
-      ctx.json(user);
+      authorizationProvider.getAuthorizations(sessionUser)
+        .compose((Void result) -> {
+          User user = new User();
+          user.setUsername(sessionUser.getUsername());
+          Set<io.vertx.ext.auth.authorization.Authorization> vertxAuthorizationList = sessionUser.authorizations().get("jooq-client");
+          List<Authorization> authorizations = new ArrayList<>();
+          for (io.vertx.ext.auth.authorization.Authorization auth : vertxAuthorizationList) {
+            if (auth instanceof RoleBasedAuthorization) {
+              String roleString = ((RoleBasedAuthorization) auth).getRole();
+              RoleAuthorization roleAuthorization = new RoleAuthorization(roleString);
+              roleAuthorization.setType("role");
+              authorizations.add(roleAuthorization);
+            } else if (auth instanceof PermissionBasedAuthorization) {
+              String permissionString = ((PermissionBasedAuthorization) auth).getPermission();
+              PermissionAuthorization permissionAuthorization = new PermissionAuthorization(permissionString);
+              permissionAuthorization.setType("permission");
+              authorizations.add(permissionAuthorization);
+            }
+          }
+          user.setAuthorizations(authorizations);
+          return Future.succeededFuture(user);
+        })
+        .onSuccess(ctx::json)
+        .onFailure(ctx::fail);
     } catch (Throwable t) {
       ctx.fail(t);
     }

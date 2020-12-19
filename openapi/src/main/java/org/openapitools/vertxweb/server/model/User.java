@@ -5,42 +5,38 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
-import org.openapitools.vertxweb.server.model.ObjectBase;
-import org.openapitools.vertxweb.server.model.Role;
-import org.openapitools.vertxweb.server.model.UserAllOf;
+import org.openapitools.vertxweb.server.model.Authorization;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User   {
   
-  private String id;
+  private String username;
   private Long lastModificationTime;
   private Long creationTime;
-  private String username;
   private String password;
   private Integer version;
-  private List<Role> roles = new ArrayList<>();
+  private List<Authorization> authorizations = new ArrayList<>();
 
   public User () {
 
   }
 
-  public User (String id, Long lastModificationTime, Long creationTime, String username, String password, Integer version, List<Role> roles) {
-    this.id = id;
+  public User (String username, Long lastModificationTime, Long creationTime, String password, Integer version, List<Authorization> authorizations) {
+    this.username = username;
     this.lastModificationTime = lastModificationTime;
     this.creationTime = creationTime;
-    this.username = username;
     this.password = password;
     this.version = version;
-    this.roles = roles;
+    this.authorizations = authorizations;
   }
 
     
-  @JsonProperty("id")
-  public String getId() {
-    return id;
+  @JsonProperty("username")
+  public String getUsername() {
+    return username;
   }
-  public void setId(String id) {
-    this.id = id;
+  public void setUsername(String username) {
+    this.username = username;
   }
 
     
@@ -62,15 +58,6 @@ public class User   {
   }
 
     
-  @JsonProperty("username")
-  public String getUsername() {
-    return username;
-  }
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
-    
   @JsonProperty("password")
   public String getPassword() {
     return password;
@@ -89,12 +76,12 @@ public class User   {
   }
 
     
-  @JsonProperty("roles")
-  public List<Role> getRoles() {
-    return roles;
+  @JsonProperty("authorizations")
+  public List<Authorization> getAuthorizations() {
+    return authorizations;
   }
-  public void setRoles(List<Role> roles) {
-    this.roles = roles;
+  public void setAuthorizations(List<Authorization> authorizations) {
+    this.authorizations = authorizations;
   }
 
 
@@ -107,18 +94,17 @@ public class User   {
       return false;
     }
     User user = (User) o;
-    return Objects.equals(id, user.id) &&
+    return Objects.equals(username, user.username) &&
         Objects.equals(lastModificationTime, user.lastModificationTime) &&
         Objects.equals(creationTime, user.creationTime) &&
-        Objects.equals(username, user.username) &&
         Objects.equals(password, user.password) &&
         Objects.equals(version, user.version) &&
-        Objects.equals(roles, user.roles);
+        Objects.equals(authorizations, user.authorizations);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, lastModificationTime, creationTime, username, password, version, roles);
+    return Objects.hash(username, lastModificationTime, creationTime, password, version, authorizations);
   }
 
   @Override
@@ -126,13 +112,12 @@ public class User   {
     StringBuilder sb = new StringBuilder();
     sb.append("class User {\n");
     
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("    lastModificationTime: ").append(toIndentedString(lastModificationTime)).append("\n");
     sb.append("    creationTime: ").append(toIndentedString(creationTime)).append("\n");
-    sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    version: ").append(toIndentedString(version)).append("\n");
-    sb.append("    roles: ").append(toIndentedString(roles)).append("\n");
+    sb.append("    authorizations: ").append(toIndentedString(authorizations)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -85,7 +85,7 @@ public class MainVerticle extends AbstractVerticle {
 
         // this isn't in HttpSessionController.login()
         // because AppLoginHandler extends AuthenticationHandlerImpl
-        routerBuilder.operation("login").handler(new AppLoginHandler(authenticationProvider));
+        routerBuilder.operation("login").handler(new AppLoginHandler(authenticationProvider, authorizationProvider));
         Router router = routerBuilder.createRouter();
         router.errorHandler(500, routingContext -> {
           routingContext.failure().printStackTrace();
