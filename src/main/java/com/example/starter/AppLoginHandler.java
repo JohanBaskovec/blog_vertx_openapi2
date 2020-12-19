@@ -74,7 +74,8 @@ public class AppLoginHandler extends AuthenticationHandlerImpl<AppAuthentication
           for (io.vertx.ext.auth.authorization.Authorization auth : vertxAuthorizationList) {
             if (auth instanceof RoleBasedAuthorization) {
               String roleString = ((RoleBasedAuthorization) auth).getRole();
-              RoleAuthorization roleAuthorization = new RoleAuthorization(roleString);
+              RoleAuthorization roleAuthorization = new RoleAuthorization();
+              roleAuthorization.setRole(roleString);
               roleAuthorization.setType("role");
               authorizations.add(roleAuthorization);
             } else if (auth instanceof PermissionBasedAuthorization) {

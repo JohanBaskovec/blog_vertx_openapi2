@@ -287,6 +287,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Authorization'
+
+#            oneOf:
+#              - $ref: '#/components/schemas/RoleAuthorization'
+#              - $ref: '#/components/schemas/PermissionAuthorization'
+#            discriminator:
+#              propertyName: type
+#              mapping:
+#                role: '#/components/schemas/RoleAuthorization'
+#                permission: '#/components/schemas/PermissionAuthorization'
+
 #    Authorization:
 #      oneOf:
 #        - $ref: '#/components/schemas/RoleAuthorization'
@@ -296,31 +306,38 @@ components:
 #        mapping:
 #          role: '#/components/schemas/RoleAuthorization'
 #          permission: '#/components/schemas/PermissionAuthorization'
-
     Authorization:
+      type: object
       required:
         - type
       properties:
         type:
           type: string
+      discriminator:
+        propertyName: type
+        mapping:
+          role: '#/components/schemas/RoleAuthorization'
+          permission: '#/components/schemas/PermissionAuthorization'
     RoleAuthorization:
       type: object
       required:
         - role
       allOf:
         - $ref: '#/components/schemas/Authorization'
-      properties:
-        role:
-          type: string
+        - type: object
+          properties:
+            role:
+              type: string
     PermissionAuthorization:
       type: object
       required:
         - permission
       allOf:
         - $ref: '#/components/schemas/Authorization'
-      properties:
-        permission:
-          type: string
+        - type: object
+          properties:
+            permission:
+              type: string
 
     HttpSession:
       type: object

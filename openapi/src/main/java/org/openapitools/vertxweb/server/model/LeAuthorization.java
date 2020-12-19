@@ -3,20 +3,20 @@ package org.openapitools.vertxweb.server.model;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.openapitools.vertxweb.server.model.Authorization;
-import org.openapitools.vertxweb.server.model.RoleAuthorizationAllOf;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RoleAuthorization extends Authorization  {
+public class LeAuthorization   {
   
   private String role;
+  private String type;
 
-  public RoleAuthorization () {
+  public LeAuthorization () {
 
   }
 
-  public RoleAuthorization (String role) {
+  public LeAuthorization (String role, String type) {
     this.role = role;
+    this.type = type;
   }
 
     
@@ -28,6 +28,15 @@ public class RoleAuthorization extends Authorization  {
     this.role = role;
   }
 
+    
+  @JsonProperty("type")
+  public String getType() {
+    return type;
+  }
+  public void setType(String type) {
+    this.type = type;
+  }
+
 
   @Override
   public boolean equals(Object o) {
@@ -37,21 +46,23 @@ public class RoleAuthorization extends Authorization  {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    RoleAuthorization roleAuthorization = (RoleAuthorization) o;
-    return Objects.equals(role, roleAuthorization.role);
+    LeAuthorization leAuthorization = (LeAuthorization) o;
+    return Objects.equals(role, leAuthorization.role) &&
+        Objects.equals(type, leAuthorization.type);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(role);
+    return Objects.hash(role, type);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class RoleAuthorization {\n");
-    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("class LeAuthorization {\n");
+    
     sb.append("    role: ").append(toIndentedString(role)).append("\n");
+    sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("}");
     return sb.toString();
   }

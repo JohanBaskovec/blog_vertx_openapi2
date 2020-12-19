@@ -3,29 +3,27 @@ package org.openapitools.vertxweb.server.model;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.openapitools.vertxweb.server.model.Authorization;
-import org.openapitools.vertxweb.server.model.RoleAuthorizationAllOf;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RoleAuthorization extends Authorization  {
+public class AuthorizationBase   {
   
-  private String role;
+  private String type;
 
-  public RoleAuthorization () {
+  public AuthorizationBase () {
 
   }
 
-  public RoleAuthorization (String role) {
-    this.role = role;
+  public AuthorizationBase (String type) {
+    this.type = type;
   }
 
     
-  @JsonProperty("role")
-  public String getRole() {
-    return role;
+  @JsonProperty("type")
+  public String getType() {
+    return type;
   }
-  public void setRole(String role) {
-    this.role = role;
+  public void setType(String type) {
+    this.type = type;
   }
 
 
@@ -37,21 +35,21 @@ public class RoleAuthorization extends Authorization  {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    RoleAuthorization roleAuthorization = (RoleAuthorization) o;
-    return Objects.equals(role, roleAuthorization.role);
+    AuthorizationBase authorizationBase = (AuthorizationBase) o;
+    return Objects.equals(type, authorizationBase.type);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(role);
+    return Objects.hash(type);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class RoleAuthorization {\n");
-    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
-    sb.append("    role: ").append(toIndentedString(role)).append("\n");
+    sb.append("class AuthorizationBase {\n");
+    
+    sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("}");
     return sb.toString();
   }

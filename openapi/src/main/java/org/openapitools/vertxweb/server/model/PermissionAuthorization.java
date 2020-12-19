@@ -4,6 +4,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.openapitools.vertxweb.server.model.Authorization;
+import org.openapitools.vertxweb.server.model.PermissionAuthorizationAllOf;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PermissionAuthorization extends Authorization  {
