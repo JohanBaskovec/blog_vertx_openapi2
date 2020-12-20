@@ -11,6 +11,8 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.authorization.RoleBasedAuthorization;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.SessionHandler;
+import io.vertx.ext.web.handler.sockjs.SockJSHandler;
+import io.vertx.ext.web.handler.sockjs.SockJSHandlerOptions;
 import io.vertx.ext.web.openapi.RouterBuilder;
 import io.vertx.ext.web.sstore.LocalSessionStore;
 import io.vertx.ext.web.sstore.SessionStore;
@@ -84,6 +86,10 @@ public class MainVerticle extends AbstractVerticle {
           .handler(registrationController::register);
 
         routerBuilder.operation("getCurrentAuthenticatedUser")
+          .handler(
+            new AppAuthorizationHandler(RoleBasedAuthorization.create("user"))
+              .addAuthorizationProvider(authorizationProvider)
+          )
           .handler(httpSessionController::getCurrentAuthenticatedUser);
         routerBuilder.operation("logout")
           .handler(httpSessionController::logout);
@@ -92,6 +98,14 @@ public class MainVerticle extends AbstractVerticle {
         // because AppLoginHandler extends AuthenticationHandlerImpl
         routerBuilder.operation("login").handler(new AppLoginHandler(authenticationProvider, authorizationProvider));
         Router router = routerBuilder.createRouter();
+
+        SockJSHandlerOptions options = new SockJSHandlerOptions()
+          .setHeartbeatInterval(2000);
+
+        SockJSHandler sockJSHandler = SockJSHandler.create(vertx, options);
+        router.mountSubRouter("/websocket", sockJSHandler.socketHandler(sockJSSocket -> {
+          sockJSSocket.handler(sockJSSocket::write);
+        }));
         router.errorHandler(500, routingContext -> {
           routingContext.failure().printStackTrace();
           routingContext.response().setStatusCode(500).end();
