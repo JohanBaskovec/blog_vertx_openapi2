@@ -2,22 +2,22 @@ package com.example.starter;
 
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.pgclient.PgPool;
-import jooq.tables.daos.DbBlogUserDao;
 import org.jooq.Configuration;
-import org.openapitools.vertxweb.server.model.User;
 
 public class HttpSessionController {
   final private Configuration configuration;
   final private PgPool pool;
+  final private UserService userService;
 
-  public HttpSessionController(Configuration configuration, PgPool pool) {
+  public HttpSessionController(Configuration configuration, PgPool pool, UserService userService) {
     this.configuration = configuration;
     this.pool = pool;
+    this.userService = userService;
   }
 
   public void getCurrentAuthenticatedUser(RoutingContext routingContext) {
     try {
-        UserService.getAuthenticatedUser(routingContext)
+        userService.getAuthenticatedUser(routingContext)
         .onSuccess(routingContext::json)
         .onFailure(routingContext::fail);
     } catch (Throwable t) {

@@ -9,30 +9,26 @@ import io.vertx.core.impl.NoStackTraceThrowable;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.authentication.Credentials;
 import io.vertx.ext.auth.authentication.UsernamePasswordCredentials;
-import io.vertx.ext.auth.authorization.PermissionBasedAuthorization;
-import io.vertx.ext.auth.authorization.RoleBasedAuthorization;
-import org.openapitools.vertxweb.server.model.Authorization;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.impl.AuthenticationHandlerImpl;
 import io.vertx.ext.web.handler.impl.HttpStatusException;
 import io.vertx.ext.web.impl.RoutingContextInternal;
-import org.openapitools.vertxweb.server.model.PermissionAuthorization;
-import org.openapitools.vertxweb.server.model.RoleAuthorization;
-import org.openapitools.vertxweb.server.model.User;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 public class AppLoginHandler extends AuthenticationHandlerImpl<AppAuthenticationProvider> {
   static final HttpStatusException UNAUTHORIZED = new HttpStatusException(401);
   static final HttpStatusException BAD_REQUEST = new HttpStatusException(400);
   static final HttpStatusException BAD_METHOD = new HttpStatusException(405);
   private final AppAuthorizationProvider authorizationProvider;
+  private final UserService userService;
 
-  public AppLoginHandler(AppAuthenticationProvider authProvider, AppAuthorizationProvider authorizationProvider) {
+  public AppLoginHandler(
+    AppAuthenticationProvider authProvider,
+    AppAuthorizationProvider authorizationProvider,
+    UserService userService
+  ) {
     super(authProvider);
     this.authorizationProvider = authorizationProvider;
+    this.userService = userService;
   }
 
   @Override
@@ -66,7 +62,7 @@ public class AppLoginHandler extends AuthenticationHandlerImpl<AppAuthentication
     try {
       AppUser sessionUser = (AppUser) ctx.user();
       authorizationProvider.getAuthorizations(sessionUser)
-        .compose((Void result) -> UserService.getAuthenticatedUser(ctx))
+        .compose((Void result) -> userService.getAuthenticatedUser(ctx))
         .onSuccess(ctx::json)
         .onFailure(ctx::fail);
     } catch (Throwable t) {

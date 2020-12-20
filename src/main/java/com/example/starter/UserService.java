@@ -1,6 +1,5 @@
 package com.example.starter;
 
-import com.example.starter.AppUser;
 import io.vertx.core.Future;
 import io.vertx.ext.auth.authorization.Authorization;
 import io.vertx.ext.auth.authorization.PermissionBasedAuthorization;
@@ -15,7 +14,10 @@ import java.util.List;
 import java.util.Set;
 
 public class UserService {
-  public static Future<User> getAuthenticatedUser(RoutingContext context) {
+  public UserService() {
+  }
+
+  public Future<User> getAuthenticatedUser(RoutingContext context) {
     try {
       AppUser sessionUser = (AppUser) context.user();
       User user = new User();

@@ -1,12 +1,9 @@
 package com.example.starter;
 
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.impl.UserImpl;
-import org.openapitools.vertxweb.server.model.Role;
 
 import java.util.Date;
-import java.util.List;
 
 public class AppUser extends UserImpl {
   public AppUser(String username) {
@@ -19,5 +16,4 @@ public class AppUser extends UserImpl {
   public String getUsername() {
     return this.principal().getString("username");
   }
-
 }

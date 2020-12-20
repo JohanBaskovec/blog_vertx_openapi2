@@ -307,7 +307,6 @@ components:
           nullable: false
           items:
             $ref: '#/components/schemas/Authorization'
-
     Authorization:
       type: object
       required:
@@ -353,6 +352,44 @@ components:
         username:
           type: string
           nullable: false
+    WebSocketMessage:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum:
+            - WebSocketClientChatMessage
+            - WebSocketServerChatMessage
+      discriminator:
+        propertyName: type
+    WebSocketClientChatMessage:
+      type: object
+      required:
+        - message
+      allOf:
+        - $ref: '#/components/schemas/WebSocketMessage'
+        - type: object
+          properties:
+            message:
+              type: string
+              nullable: false
+    WebSocketServerChatMessage:
+      type: object
+      required:
+        - sender
+        - message
+      allOf:
+        - $ref: '#/components/schemas/WebSocketMessage'
+        - type: object
+          properties:
+            sender:
+              type: string
+              nullable: false
+            message:
+              type: string
+              nullable: false
   securitySchemes:
     cookieAuth:
       type: apiKey

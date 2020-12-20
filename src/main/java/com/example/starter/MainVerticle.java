@@ -4,6 +4,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
@@ -13,6 +14,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.SessionHandler;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import io.vertx.ext.web.handler.sockjs.SockJSHandlerOptions;
+import io.vertx.ext.web.handler.sockjs.SockJSSocket;
 import io.vertx.ext.web.openapi.RouterBuilder;
 import io.vertx.ext.web.sstore.LocalSessionStore;
 import io.vertx.ext.web.sstore.SessionStore;
@@ -23,6 +25,13 @@ import jooq.tables.daos.DbBlogUserDao;
 import org.jooq.Configuration;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DefaultConfiguration;
+import org.openapitools.vertxweb.server.WebSocketService;
+import org.openapitools.vertxweb.server.model.*;
+
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 
 public class MainVerticle extends AbstractVerticle {
   @Override
@@ -37,7 +46,8 @@ public class MainVerticle extends AbstractVerticle {
       PgPool pool = PgPool.pool(vertx, pgConnectOptions, poolOptions);
       ArticleController articleController = new ArticleController(configuration, pool);
       RegistrationController registrationController = new RegistrationController(configuration, pool);
-      HttpSessionController httpSessionController = new HttpSessionController(configuration, pool);
+      UserService userService = new UserService();
+      HttpSessionController httpSessionController = new HttpSessionController(configuration, pool, userService);
 
       SessionStore sessionStore = LocalSessionStore.create(vertx);
       SessionHandler sessionHandler = SessionHandler.create(sessionStore);
@@ -46,6 +56,7 @@ public class MainVerticle extends AbstractVerticle {
       AppAuthorizationProvider authorizationProvider = new AppAuthorizationProvider(configuration, pool);
       AuthorizationService authorizationService = new AuthorizationService();
       UserController userController = new UserController(configuration, pool, authorizationService);
+      WebSocketService webSocketService = new WebSocketService();
       Future<HttpServer> startServer$ = routerBuilder$.compose(routerBuilder -> {
         routerBuilder.rootHandler(routingContext -> {
           routingContext.response()
@@ -96,15 +107,49 @@ public class MainVerticle extends AbstractVerticle {
 
         // this isn't in HttpSessionController.login()
         // because AppLoginHandler extends AuthenticationHandlerImpl
-        routerBuilder.operation("login").handler(new AppLoginHandler(authenticationProvider, authorizationProvider));
+        routerBuilder.operation("login").handler(new AppLoginHandler(
+          authenticationProvider,
+          authorizationProvider,
+          userService
+        ));
         Router router = routerBuilder.createRouter();
 
         SockJSHandlerOptions options = new SockJSHandlerOptions()
           .setHeartbeatInterval(2000);
 
+        List<SockJSSocket> connectedSockets = new ArrayList<>();
+
         SockJSHandler sockJSHandler = SockJSHandler.create(vertx, options);
-        router.mountSubRouter("/websocket", sockJSHandler.socketHandler(sockJSSocket -> {
-          sockJSSocket.handler(sockJSSocket::write);
+        router.mountSubRouter("/websocket", sockJSHandler.socketHandler((SockJSSocket sock) -> {
+          connectedSockets.add(sock);
+          System.out.println("Received new socket connection.");
+          System.out.println("Number of sockets connected: " + connectedSockets.size());
+          sock.handler((Buffer buffer) -> {
+            String fromBuffer = buffer.toString(StandardCharsets.UTF_8);
+            System.out.println("Received WebSocket message:");
+            System.out.println(fromBuffer);
+            AppUser sessionUser = (AppUser) sock.webUser();
+            try {
+              WebSocketMessage webSocketMessage = webSocketService.parseMessage(buffer);
+              if (webSocketMessage instanceof WebSocketClientChatMessage) {
+                WebSocketClientChatMessage clientChatMessage = (WebSocketClientChatMessage) webSocketMessage;
+                WebSocketServerChatMessage serverChatMessage = webSocketService.newServerChatMessage(
+                  sessionUser.getUsername(),
+                  clientChatMessage.getMessage()
+                );
+                for (SockJSSocket connectedSocket : connectedSockets) {
+                  connectedSocket.write(JsonObject.mapFrom(serverChatMessage).toBuffer());
+                }
+              }
+            } catch (Throwable t) {
+              System.err.println("Received invalid message :");
+              t.printStackTrace();
+              return;
+            }
+          });
+          sock.endHandler((Void end) -> {
+            connectedSockets.remove(sock);
+          });
         }));
         router.errorHandler(500, routingContext -> {
           routingContext.failure().printStackTrace();
