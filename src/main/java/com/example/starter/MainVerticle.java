@@ -42,6 +42,8 @@ public class MainVerticle extends AbstractVerticle {
       Future<RouterBuilder> routerBuilder$ = RouterBuilder.create(vertx, "openapi.yaml");
       AppAuthenticationProvider authenticationProvider = new AppAuthenticationProvider(new DbBlogUserDao(configuration, pool));
       AppAuthorizationProvider authorizationProvider = new AppAuthorizationProvider(configuration, pool);
+      AuthorizationService authorizationService = new AuthorizationService();
+      UserController userController = new UserController(configuration, pool, authorizationService);
       Future<HttpServer> startServer$ = routerBuilder$.compose(routerBuilder -> {
         routerBuilder.rootHandler(routingContext -> {
           routingContext.response()
@@ -74,6 +76,9 @@ public class MainVerticle extends AbstractVerticle {
           .handler(articleController::getAllArticles);
         routerBuilder.operation("getArticleById")
           .handler(articleController::getArticleById);
+
+        routerBuilder.operation("getUserByUsername")
+          .handler(userController::getUserByUsername);
 
         routerBuilder.operation("register")
           .handler(registrationController::register);

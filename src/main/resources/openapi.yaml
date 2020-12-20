@@ -71,6 +71,25 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Article'
+  /user/{username}:
+    get:
+      description: Get an user
+      operationId: getUserByUsername
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: An user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: User not found
   /register:
     post:
       description: Register

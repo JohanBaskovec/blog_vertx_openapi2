@@ -20,6 +20,7 @@ public class UserService {
       AppUser sessionUser = (AppUser) context.user();
       User user = new User();
       user.setUsername(sessionUser.getUsername());
+
       Set<Authorization> vertxAuthorizationList = sessionUser.authorizations().get("jooq-client");
       List<org.openapitools.vertxweb.server.model.Authorization> authorizations = new ArrayList<>();
       for (io.vertx.ext.auth.authorization.Authorization auth : vertxAuthorizationList) {
