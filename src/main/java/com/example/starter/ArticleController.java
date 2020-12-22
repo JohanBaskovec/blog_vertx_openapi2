@@ -9,6 +9,7 @@ import io.vertx.ext.web.handler.impl.HttpStatusException;
 import io.vertx.ext.web.validation.RequestParameters;
 import io.vertx.ext.web.validation.ValidationHandler;
 import io.vertx.pgclient.PgPool;
+import jooq.Tables;
 import jooq.tables.daos.DbArticleDao;
 import jooq.tables.daos.DbBlogUserDao;
 import jooq.tables.pojos.DbArticle;
@@ -62,7 +63,11 @@ public class ArticleController {
   public void getAllArticles(RoutingContext routingContext) {
     DbArticleDao dao = new DbArticleDao(configuration, pool);
     Holder<List<DbArticle>> dbArticlesHolder = new Holder<>();
-    dao.findAll().compose((List<DbArticle> dbArticles) -> {
+
+    dao.queryExecutor().findMany(dslContext -> dslContext
+      .selectFrom(Tables.ARTICLE)
+      .orderBy(Tables.ARTICLE.CREATION_TIME.desc())
+    ).compose((List<DbArticle> dbArticles) -> {
       dbArticlesHolder.value = dbArticles;
       Set<String> authorIds = dbArticles.stream().map(DbArticle::getAuthorId).collect(Collectors.toSet());
       DbBlogUserDao dbBlogUserDao = new DbBlogUserDao(configuration, pool);
@@ -112,7 +117,12 @@ public class ArticleController {
     DbArticleDao dao = new DbArticleDao(configuration, pool);
     RequestParameters requestParameters = routingContext.get(ValidationHandler.REQUEST_CONTEXT_KEY);
     String username = requestParameters.pathParameter("username").getString();
-    dao.findManyByDbAuthorId(Collections.singletonList(username)).compose((List<DbArticle> dbArticles) -> {
+
+    dao.queryExecutor().findMany(dslContext -> dslContext
+      .selectFrom(Tables.ARTICLE)
+      .where(Tables.ARTICLE.AUTHOR_ID.in(username))
+      .orderBy(Tables.ARTICLE.CREATION_TIME.desc())
+    ).compose((List<DbArticle> dbArticles) -> {
       List<Article> articles = dbArticles.stream().map(articleMapper::fromDb).collect(Collectors.toList());
       return Future.succeededFuture(articles);
     }).onSuccess(routingContext::json)
