@@ -87,6 +87,8 @@ public class MainVerticle extends AbstractVerticle {
           .handler(articleController::updateArticle);
         routerBuilder.operation("getAllArticles")
           .handler(articleController::getAllArticles);
+        routerBuilder.operation("getAllArticlesOfUser")
+          .handler(articleController::getAllArticlesOfUser);
         routerBuilder.operation("getArticleById")
           .handler(articleController::getArticleById);
 

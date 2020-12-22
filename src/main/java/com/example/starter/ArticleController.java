@@ -17,10 +17,7 @@ import org.openapitools.vertxweb.server.model.Article;
 import org.openapitools.vertxweb.server.model.User;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ArticleController {
@@ -107,6 +104,17 @@ public class ArticleController {
       Article article = articleMapper.fromDb(dbArticleHolder.value);
       article.setAuthor(user);
       return Future.succeededFuture(article);
+    }).onSuccess(routingContext::json)
+      .onFailure(routingContext::fail);
+  }
+
+  public void getAllArticlesOfUser(RoutingContext routingContext) {
+    DbArticleDao dao = new DbArticleDao(configuration, pool);
+    RequestParameters requestParameters = routingContext.get(ValidationHandler.REQUEST_CONTEXT_KEY);
+    String username = requestParameters.pathParameter("username").getString();
+    dao.findManyByDbAuthorId(Collections.singletonList(username)).compose((List<DbArticle> dbArticles) -> {
+      List<Article> articles = dbArticles.stream().map(articleMapper::fromDb).collect(Collectors.toList());
+      return Future.succeededFuture(articles);
     }).onSuccess(routingContext::json)
       .onFailure(routingContext::fail);
   }
