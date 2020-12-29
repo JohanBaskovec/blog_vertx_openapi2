@@ -6,13 +6,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="blog_vertx_openapi2" />
+        <module name="blog-vertx-openapi2" />
         <module name="starter" />
         <module name="generator" />
-        <module name="blog-vertx-openapi2" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="blog-vertx-openapi2" target="11" />
+      <module name="blog_vertx_openapi2" target="11" />
       <module name="generator" target="11" />
       <module name="starter" target="11" />
     </bytecodeTargetLevel>

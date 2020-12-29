@@ -6,7 +6,7 @@ package jooq.tables.pojos;
 
 import io.github.jklingsporn.vertx.jooq.shared.internal.VertxPojo;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import jooq.tables.interfaces.DbIRole;
 
@@ -17,11 +17,11 @@ import jooq.tables.interfaces.DbIRole;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DbRole implements VertxPojo, DbIRole {
 
-    private static final long serialVersionUID = 8774145;
+    private static final long serialVersionUID = 851493581;
 
-    private String        id;
-    private LocalDateTime lastModificationTime;
-    private LocalDateTime creationTime;
+    private String         id;
+    private OffsetDateTime lastModificationTime;
+    private OffsetDateTime creationTime;
 
     public DbRole() {}
 
@@ -32,9 +32,9 @@ public class DbRole implements VertxPojo, DbIRole {
     }
 
     public DbRole(
-        String        id,
-        LocalDateTime lastModificationTime,
-        LocalDateTime creationTime
+        String         id,
+        OffsetDateTime lastModificationTime,
+        OffsetDateTime creationTime
     ) {
         this.id = id;
         this.lastModificationTime = lastModificationTime;
@@ -58,23 +58,23 @@ public class DbRole implements VertxPojo, DbIRole {
     }
 
     @Override
-    public LocalDateTime getLastModificationTime() {
+    public OffsetDateTime getLastModificationTime() {
         return this.lastModificationTime;
     }
 
     @Override
-    public DbRole setLastModificationTime(LocalDateTime lastModificationTime) {
+    public DbRole setLastModificationTime(OffsetDateTime lastModificationTime) {
         this.lastModificationTime = lastModificationTime;
         return this;
     }
 
     @Override
-    public LocalDateTime getCreationTime() {
+    public OffsetDateTime getCreationTime() {
         return this.creationTime;
     }
 
     @Override
-    public DbRole setCreationTime(LocalDateTime creationTime) {
+    public DbRole setCreationTime(OffsetDateTime creationTime) {
         this.creationTime = creationTime;
         return this;
     }

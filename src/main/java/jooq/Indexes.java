@@ -5,6 +5,7 @@ package jooq;
 
 
 import jooq.tables.DbArticle;
+import jooq.tables.DbArticleComment;
 import jooq.tables.DbPermission;
 import jooq.tables.DbRole;
 
@@ -24,6 +25,7 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     public static final Index ARTICLE_ID_UINDEX = Indexes0.ARTICLE_ID_UINDEX;
+    public static final Index ARTICLE_COMMENT_ID_UINDEX = Indexes0.ARTICLE_COMMENT_ID_UINDEX;
     public static final Index PERMISSION_ID_UINDEX = Indexes0.PERMISSION_ID_UINDEX;
     public static final Index ROLE_ID_UINDEX = Indexes0.ROLE_ID_UINDEX;
 
@@ -33,6 +35,7 @@ public class Indexes {
 
     private static class Indexes0 {
         public static Index ARTICLE_ID_UINDEX = Internal.createIndex("article_id_uindex", DbArticle.ARTICLE, new OrderField[] { DbArticle.ARTICLE.ID }, true);
+        public static Index ARTICLE_COMMENT_ID_UINDEX = Internal.createIndex("article_comment_id_uindex", DbArticleComment.ARTICLE_COMMENT, new OrderField[] { DbArticleComment.ARTICLE_COMMENT.ID }, true);
         public static Index PERMISSION_ID_UINDEX = Internal.createIndex("permission_id_uindex", DbPermission.PERMISSION, new OrderField[] { DbPermission.PERMISSION.ID }, true);
         public static Index ROLE_ID_UINDEX = Internal.createIndex("role_id_uindex", DbRole.ROLE, new OrderField[] { DbRole.ROLE.ID }, true);
     }

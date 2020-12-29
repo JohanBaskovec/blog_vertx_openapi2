@@ -5,6 +5,7 @@ package jooq;
 
 
 import jooq.tables.DbArticle;
+import jooq.tables.DbArticleComment;
 import jooq.tables.DbBlogUser;
 import jooq.tables.DbPermission;
 import jooq.tables.DbRole;
@@ -22,6 +23,11 @@ public class Tables {
      * The table <code>public.article</code>.
      */
     public static final DbArticle ARTICLE = DbArticle.ARTICLE;
+
+    /**
+     * The table <code>public.article_comment</code>.
+     */
+    public static final DbArticleComment ARTICLE_COMMENT = DbArticleComment.ARTICLE_COMMENT;
 
     /**
      * The table <code>public.blog_user</code>.

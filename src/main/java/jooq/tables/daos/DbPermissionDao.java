@@ -6,7 +6,7 @@ package jooq.tables.daos;
 
 import io.github.jklingsporn.vertx.jooq.shared.reactive.AbstractReactiveVertxDAO;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 
 import jooq.tables.DbPermission;
@@ -40,28 +40,28 @@ public class DbPermissionDao extends AbstractReactiveVertxDAO<DbPermissionRecord
     /**
      * Find records that have <code>last_modification_time IN (values)</code> asynchronously
      */
-    public Future<List<jooq.tables.pojos.DbPermission>> findManyByDbLastModificationTime(Collection<LocalDateTime> values) {
+    public Future<List<jooq.tables.pojos.DbPermission>> findManyByDbLastModificationTime(Collection<OffsetDateTime> values) {
         return findManyByCondition(DbPermission.PERMISSION.LAST_MODIFICATION_TIME.in(values));
     }
 
     /**
      * Find records that have <code>last_modification_time IN (values)</code> asynchronously limited by the given limit
      */
-    public Future<List<jooq.tables.pojos.DbPermission>> findManyByDbLastModificationTime(Collection<LocalDateTime> values, int limit) {
+    public Future<List<jooq.tables.pojos.DbPermission>> findManyByDbLastModificationTime(Collection<OffsetDateTime> values, int limit) {
         return findManyByCondition(DbPermission.PERMISSION.LAST_MODIFICATION_TIME.in(values),limit);
     }
 
     /**
      * Find records that have <code>creation_time IN (values)</code> asynchronously
      */
-    public Future<List<jooq.tables.pojos.DbPermission>> findManyByDbCreationTime(Collection<LocalDateTime> values) {
+    public Future<List<jooq.tables.pojos.DbPermission>> findManyByDbCreationTime(Collection<OffsetDateTime> values) {
         return findManyByCondition(DbPermission.PERMISSION.CREATION_TIME.in(values));
     }
 
     /**
      * Find records that have <code>creation_time IN (values)</code> asynchronously limited by the given limit
      */
-    public Future<List<jooq.tables.pojos.DbPermission>> findManyByDbCreationTime(Collection<LocalDateTime> values, int limit) {
+    public Future<List<jooq.tables.pojos.DbPermission>> findManyByDbCreationTime(Collection<OffsetDateTime> values, int limit) {
         return findManyByCondition(DbPermission.PERMISSION.CREATION_TIME.in(values),limit);
     }
 

@@ -5,11 +5,13 @@ package jooq;
 
 
 import jooq.tables.DbArticle;
+import jooq.tables.DbArticleComment;
 import jooq.tables.DbBlogUser;
 import jooq.tables.DbPermission;
 import jooq.tables.DbRole;
 import jooq.tables.DbRolesPermissions;
 import jooq.tables.DbUserRoles;
+import jooq.tables.records.DbArticleCommentRecord;
 import jooq.tables.records.DbArticleRecord;
 import jooq.tables.records.DbBlogUserRecord;
 import jooq.tables.records.DbPermissionRecord;
@@ -40,6 +42,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<DbArticleRecord> ARTICLE_PK = UniqueKeys0.ARTICLE_PK;
+    public static final UniqueKey<DbArticleCommentRecord> ARTICLE_COMMENT_PK = UniqueKeys0.ARTICLE_COMMENT_PK;
     public static final UniqueKey<DbBlogUserRecord> PK_USERNAME = UniqueKeys0.PK_USERNAME;
     public static final UniqueKey<DbPermissionRecord> PERMISSION_PK = UniqueKeys0.PERMISSION_PK;
     public static final UniqueKey<DbRoleRecord> ROLE_PK = UniqueKeys0.ROLE_PK;
@@ -51,6 +54,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<DbArticleRecord, DbBlogUserRecord> ARTICLE__ARTICLE_USER_USERNAME_FK = ForeignKeys0.ARTICLE__ARTICLE_USER_USERNAME_FK;
+    public static final ForeignKey<DbArticleCommentRecord, DbBlogUserRecord> ARTICLE_COMMENT__ARTICLE_COMMENT_USER_USERNAME_FK = ForeignKeys0.ARTICLE_COMMENT__ARTICLE_COMMENT_USER_USERNAME_FK;
+    public static final ForeignKey<DbArticleCommentRecord, DbArticleRecord> ARTICLE_COMMENT__ARTICLE_COMMENT_ARTICLE_ID_FK = ForeignKeys0.ARTICLE_COMMENT__ARTICLE_COMMENT_ARTICLE_ID_FK;
     public static final ForeignKey<DbRolesPermissionsRecord, DbRoleRecord> ROLES_PERMISSIONS__ROLES_PERMISSIONS_ROLE_ID_FK = ForeignKeys0.ROLES_PERMISSIONS__ROLES_PERMISSIONS_ROLE_ID_FK;
     public static final ForeignKey<DbRolesPermissionsRecord, DbPermissionRecord> ROLES_PERMISSIONS__ROLES_PERMISSIONS_PERMISSION_ID_FK = ForeignKeys0.ROLES_PERMISSIONS__ROLES_PERMISSIONS_PERMISSION_ID_FK;
     public static final ForeignKey<DbUserRolesRecord, DbBlogUserRecord> USER_ROLES__FK_USERNAME = ForeignKeys0.USER_ROLES__FK_USERNAME;
@@ -62,6 +67,7 @@ public class Keys {
 
     private static class UniqueKeys0 {
         public static final UniqueKey<DbArticleRecord> ARTICLE_PK = Internal.createUniqueKey(DbArticle.ARTICLE, "article_pk", new TableField[] { DbArticle.ARTICLE.ID }, true);
+        public static final UniqueKey<DbArticleCommentRecord> ARTICLE_COMMENT_PK = Internal.createUniqueKey(DbArticleComment.ARTICLE_COMMENT, "article_comment_pk", new TableField[] { DbArticleComment.ARTICLE_COMMENT.ID }, true);
         public static final UniqueKey<DbBlogUserRecord> PK_USERNAME = Internal.createUniqueKey(DbBlogUser.BLOG_USER, "pk_username", new TableField[] { DbBlogUser.BLOG_USER.USERNAME }, true);
         public static final UniqueKey<DbPermissionRecord> PERMISSION_PK = Internal.createUniqueKey(DbPermission.PERMISSION, "permission_pk", new TableField[] { DbPermission.PERMISSION.ID }, true);
         public static final UniqueKey<DbRoleRecord> ROLE_PK = Internal.createUniqueKey(DbRole.ROLE, "role_pk", new TableField[] { DbRole.ROLE.ID }, true);
@@ -71,6 +77,8 @@ public class Keys {
 
     private static class ForeignKeys0 {
         public static final ForeignKey<DbArticleRecord, DbBlogUserRecord> ARTICLE__ARTICLE_USER_USERNAME_FK = Internal.createForeignKey(Keys.PK_USERNAME, DbArticle.ARTICLE, "article_user_username_fk", new TableField[] { DbArticle.ARTICLE.AUTHOR_ID }, true);
+        public static final ForeignKey<DbArticleCommentRecord, DbBlogUserRecord> ARTICLE_COMMENT__ARTICLE_COMMENT_USER_USERNAME_FK = Internal.createForeignKey(Keys.PK_USERNAME, DbArticleComment.ARTICLE_COMMENT, "article_comment_user_username_fk", new TableField[] { DbArticleComment.ARTICLE_COMMENT.AUTHOR_ID }, true);
+        public static final ForeignKey<DbArticleCommentRecord, DbArticleRecord> ARTICLE_COMMENT__ARTICLE_COMMENT_ARTICLE_ID_FK = Internal.createForeignKey(Keys.ARTICLE_PK, DbArticleComment.ARTICLE_COMMENT, "article_comment_article_id_fk", new TableField[] { DbArticleComment.ARTICLE_COMMENT.ARTICLE_ID }, true);
         public static final ForeignKey<DbRolesPermissionsRecord, DbRoleRecord> ROLES_PERMISSIONS__ROLES_PERMISSIONS_ROLE_ID_FK = Internal.createForeignKey(Keys.ROLE_PK, DbRolesPermissions.ROLES_PERMISSIONS, "roles_permissions_role_id_fk", new TableField[] { DbRolesPermissions.ROLES_PERMISSIONS.ROLE_ID }, true);
         public static final ForeignKey<DbRolesPermissionsRecord, DbPermissionRecord> ROLES_PERMISSIONS__ROLES_PERMISSIONS_PERMISSION_ID_FK = Internal.createForeignKey(Keys.PERMISSION_PK, DbRolesPermissions.ROLES_PERMISSIONS, "roles_permissions_permission_id_fk", new TableField[] { DbRolesPermissions.ROLES_PERMISSIONS.PERMISSION_ID }, true);
         public static final ForeignKey<DbUserRolesRecord, DbBlogUserRecord> USER_ROLES__FK_USERNAME = Internal.createForeignKey(Keys.PK_USERNAME, DbUserRoles.USER_ROLES, "fk_username", new TableField[] { DbUserRoles.USER_ROLES.USERNAME }, true);

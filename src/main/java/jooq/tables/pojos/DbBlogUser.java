@@ -6,7 +6,7 @@ package jooq.tables.pojos;
 
 import io.github.jklingsporn.vertx.jooq.shared.internal.VertxPojo;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import jooq.tables.interfaces.DbIBlogUser;
 
@@ -17,14 +17,14 @@ import jooq.tables.interfaces.DbIBlogUser;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DbBlogUser implements VertxPojo, DbIBlogUser {
 
-    private static final long serialVersionUID = -1652123982;
+    private static final long serialVersionUID = 1689639952;
 
-    private String        username;
-    private String        password;
-    private String        passwordSalt;
-    private Integer       version;
-    private LocalDateTime creationTime;
-    private LocalDateTime lastModificationTime;
+    private String         username;
+    private String         password;
+    private String         passwordSalt;
+    private Integer        version;
+    private OffsetDateTime creationTime;
+    private OffsetDateTime lastModificationTime;
 
     public DbBlogUser() {}
 
@@ -38,12 +38,12 @@ public class DbBlogUser implements VertxPojo, DbIBlogUser {
     }
 
     public DbBlogUser(
-        String        username,
-        String        password,
-        String        passwordSalt,
-        Integer       version,
-        LocalDateTime creationTime,
-        LocalDateTime lastModificationTime
+        String         username,
+        String         password,
+        String         passwordSalt,
+        Integer        version,
+        OffsetDateTime creationTime,
+        OffsetDateTime lastModificationTime
     ) {
         this.username = username;
         this.password = password;
@@ -103,23 +103,23 @@ public class DbBlogUser implements VertxPojo, DbIBlogUser {
     }
 
     @Override
-    public LocalDateTime getCreationTime() {
+    public OffsetDateTime getCreationTime() {
         return this.creationTime;
     }
 
     @Override
-    public DbBlogUser setCreationTime(LocalDateTime creationTime) {
+    public DbBlogUser setCreationTime(OffsetDateTime creationTime) {
         this.creationTime = creationTime;
         return this;
     }
 
     @Override
-    public LocalDateTime getLastModificationTime() {
+    public OffsetDateTime getLastModificationTime() {
         return this.lastModificationTime;
     }
 
     @Override
-    public DbBlogUser setLastModificationTime(LocalDateTime lastModificationTime) {
+    public DbBlogUser setLastModificationTime(OffsetDateTime lastModificationTime) {
         this.lastModificationTime = lastModificationTime;
         return this;
     }

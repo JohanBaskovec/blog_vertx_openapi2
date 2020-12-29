@@ -30,7 +30,6 @@ import org.openapitools.vertxweb.server.model.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 public class MainVerticle extends AbstractVerticle {
@@ -57,6 +56,7 @@ public class MainVerticle extends AbstractVerticle {
       AuthorizationService authorizationService = new AuthorizationService();
       UserController userController = new UserController(configuration, pool, authorizationService);
       WebSocketService webSocketService = new WebSocketService();
+      ArticleCommentController articleCommentController = new ArticleCommentController(configuration, pool);
       Future<HttpServer> startServer$ = routerBuilder$.compose(routerBuilder -> {
         routerBuilder.rootHandler(routingContext -> {
           routingContext.response()
@@ -91,6 +91,14 @@ public class MainVerticle extends AbstractVerticle {
           .handler(articleController::getAllArticlesOfUser);
         routerBuilder.operation("getArticleById")
           .handler(articleController::getArticleById);
+        routerBuilder.operation("getAllCommentsOfArticle")
+          .handler(articleCommentController::getAllCommentsOfArticle);
+        routerBuilder.operation("insertArticleComment")
+          .handler(
+            new AppAuthorizationHandler(RoleBasedAuthorization.create("user"))
+              .addAuthorizationProvider(authorizationProvider)
+          )
+          .handler(articleCommentController::insertArticleComment);
 
         routerBuilder.operation("getUserByUsername")
           .handler(userController::getUserByUsername);

@@ -6,7 +6,7 @@ package jooq.tables.pojos;
 
 import io.github.jklingsporn.vertx.jooq.shared.internal.VertxPojo;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import jooq.tables.interfaces.DbIPermission;
 
@@ -17,11 +17,11 @@ import jooq.tables.interfaces.DbIPermission;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DbPermission implements VertxPojo, DbIPermission {
 
-    private static final long serialVersionUID = -559646815;
+    private static final long serialVersionUID = 2050821421;
 
-    private String        id;
-    private LocalDateTime lastModificationTime;
-    private LocalDateTime creationTime;
+    private String         id;
+    private OffsetDateTime lastModificationTime;
+    private OffsetDateTime creationTime;
 
     public DbPermission() {}
 
@@ -32,9 +32,9 @@ public class DbPermission implements VertxPojo, DbIPermission {
     }
 
     public DbPermission(
-        String        id,
-        LocalDateTime lastModificationTime,
-        LocalDateTime creationTime
+        String         id,
+        OffsetDateTime lastModificationTime,
+        OffsetDateTime creationTime
     ) {
         this.id = id;
         this.lastModificationTime = lastModificationTime;
@@ -58,23 +58,23 @@ public class DbPermission implements VertxPojo, DbIPermission {
     }
 
     @Override
-    public LocalDateTime getLastModificationTime() {
+    public OffsetDateTime getLastModificationTime() {
         return this.lastModificationTime;
     }
 
     @Override
-    public DbPermission setLastModificationTime(LocalDateTime lastModificationTime) {
+    public DbPermission setLastModificationTime(OffsetDateTime lastModificationTime) {
         this.lastModificationTime = lastModificationTime;
         return this;
     }
 
     @Override
-    public LocalDateTime getCreationTime() {
+    public OffsetDateTime getCreationTime() {
         return this.creationTime;
     }
 
     @Override
-    public DbPermission setCreationTime(LocalDateTime creationTime) {
+    public DbPermission setCreationTime(OffsetDateTime creationTime) {
         this.creationTime = creationTime;
         return this;
     }

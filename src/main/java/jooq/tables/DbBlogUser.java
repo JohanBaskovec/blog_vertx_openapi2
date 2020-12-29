@@ -4,7 +4,7 @@
 package jooq.tables;
 
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DbBlogUser extends TableImpl<DbBlogUserRecord> {
 
-    private static final long serialVersionUID = 1450749355;
+    private static final long serialVersionUID = -101371452;
 
     /**
      * The reference instance of <code>public.blog_user</code>
@@ -70,12 +70,12 @@ public class DbBlogUser extends TableImpl<DbBlogUserRecord> {
     /**
      * The column <code>public.blog_user.creation_time</code>.
      */
-    public final TableField<DbBlogUserRecord, LocalDateTime> CREATION_TIME = createField(DSL.name("creation_time"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<DbBlogUserRecord, OffsetDateTime> CREATION_TIME = createField(DSL.name("creation_time"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
     /**
      * The column <code>public.blog_user.last_modification_time</code>.
      */
-    public final TableField<DbBlogUserRecord, LocalDateTime> LAST_MODIFICATION_TIME = createField(DSL.name("last_modification_time"), org.jooq.impl.SQLDataType.LOCALDATETIME, this, "");
+    public final TableField<DbBlogUserRecord, OffsetDateTime> LAST_MODIFICATION_TIME = createField(DSL.name("last_modification_time"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE, this, "");
 
     /**
      * Create a <code>public.blog_user</code> table reference
@@ -156,7 +156,7 @@ public class DbBlogUser extends TableImpl<DbBlogUserRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<String, String, String, Integer, LocalDateTime, LocalDateTime> fieldsRow() {
+    public Row6<String, String, String, Integer, OffsetDateTime, OffsetDateTime> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }

@@ -71,6 +71,41 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Article'
+  /article-comment:
+    post:
+      description: Create a comment
+      operationId: insertArticleComment
+      security:
+        - cookieAuth: [User]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleCommentCreationFormData'
+      responses:
+        204:
+          description: Nothing
+  /article/{articleId}/comments:
+    get:
+      description: Get all the comments of an article
+      operationId: getAllCommentsOfArticle
+      parameters:
+        - name: articleId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ObjectId'
+      responses:
+        200:
+          description: All the comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleComment'
+
   /user/{username}:
     get:
       description: Get an user
@@ -238,6 +273,41 @@ components:
             title:
               type: string
               nullable: false
+            content:
+              type: string
+              nullable: false
+            author:
+              $ref: '#/components/schemas/User'
+            version:
+              type: integer
+              nullable: false
+    ArticleCommentCreationFormData:
+      type: object
+      required:
+        - content
+        - articleId
+        - id
+      properties:
+        id:
+          $ref: '#/components/schemas/ObjectId'
+        articleId:
+          $ref: '#/components/schemas/ObjectId'
+        content:
+          type: string
+          nullable: false
+    ArticleComment:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ObjectBase'
+        - type: object
+          required:
+            - content
+            - version
+            - author
+            - articleid
+          properties:
+            articleId:
+              $ref: '#/components/schemas/ObjectId'
             content:
               type: string
               nullable: false

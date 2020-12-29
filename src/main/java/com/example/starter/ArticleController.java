@@ -18,6 +18,7 @@ import org.openapitools.vertxweb.server.model.Article;
 import org.openapitools.vertxweb.server.model.User;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,7 @@ public class ArticleController {
     dao.findOneById(article.getId()).compose(dbArticle -> {
       dbArticle.setContent(article.getContent());
       dbArticle.setTitle(article.getTitle());
-      dbArticle.setLastModificationTime(LocalDateTime.now());
+      dbArticle.setLastModificationTime(OffsetDateTime.now());
       return dao.update(dbArticle);
     }).onSuccess((Integer i) -> routingContext.response().setStatusCode(204).end())
       .onFailure(routingContext::fail);

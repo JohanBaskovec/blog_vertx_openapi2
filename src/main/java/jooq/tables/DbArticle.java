@@ -4,7 +4,7 @@
 package jooq.tables;
 
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DbArticle extends TableImpl<DbArticleRecord> {
 
-    private static final long serialVersionUID = -716488951;
+    private static final long serialVersionUID = 890865014;
 
     /**
      * The reference instance of <code>public.article</code>
@@ -77,12 +77,12 @@ public class DbArticle extends TableImpl<DbArticleRecord> {
     /**
      * The column <code>public.article.creation_time</code>.
      */
-    public final TableField<DbArticleRecord, LocalDateTime> CREATION_TIME = createField(DSL.name("creation_time"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<DbArticleRecord, OffsetDateTime> CREATION_TIME = createField(DSL.name("creation_time"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
     /**
      * The column <code>public.article.last_modification_time</code>.
      */
-    public final TableField<DbArticleRecord, LocalDateTime> LAST_MODIFICATION_TIME = createField(DSL.name("last_modification_time"), org.jooq.impl.SQLDataType.LOCALDATETIME, this, "");
+    public final TableField<DbArticleRecord, OffsetDateTime> LAST_MODIFICATION_TIME = createField(DSL.name("last_modification_time"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE, this, "");
 
     /**
      * Create a <code>public.article</code> table reference
@@ -177,7 +177,7 @@ public class DbArticle extends TableImpl<DbArticleRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<String, String, String, String, Integer, LocalDateTime, LocalDateTime> fieldsRow() {
+    public Row7<String, String, String, String, Integer, OffsetDateTime, OffsetDateTime> fieldsRow() {
         return (Row7) super.fieldsRow();
     }
 }

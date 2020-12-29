@@ -6,7 +6,7 @@ package jooq.tables.pojos;
 
 import io.github.jklingsporn.vertx.jooq.shared.internal.VertxPojo;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import jooq.tables.interfaces.DbIArticle;
 
@@ -17,15 +17,15 @@ import jooq.tables.interfaces.DbIArticle;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DbArticle implements VertxPojo, DbIArticle {
 
-    private static final long serialVersionUID = -1574009880;
+    private static final long serialVersionUID = 557486244;
 
-    private String        id;
-    private String        title;
-    private String        content;
-    private String        authorId;
-    private Integer       version;
-    private LocalDateTime creationTime;
-    private LocalDateTime lastModificationTime;
+    private String         id;
+    private String         title;
+    private String         content;
+    private String         authorId;
+    private Integer        version;
+    private OffsetDateTime creationTime;
+    private OffsetDateTime lastModificationTime;
 
     public DbArticle() {}
 
@@ -40,13 +40,13 @@ public class DbArticle implements VertxPojo, DbIArticle {
     }
 
     public DbArticle(
-        String        id,
-        String        title,
-        String        content,
-        String        authorId,
-        Integer       version,
-        LocalDateTime creationTime,
-        LocalDateTime lastModificationTime
+        String         id,
+        String         title,
+        String         content,
+        String         authorId,
+        Integer        version,
+        OffsetDateTime creationTime,
+        OffsetDateTime lastModificationTime
     ) {
         this.id = id;
         this.title = title;
@@ -118,23 +118,23 @@ public class DbArticle implements VertxPojo, DbIArticle {
     }
 
     @Override
-    public LocalDateTime getCreationTime() {
+    public OffsetDateTime getCreationTime() {
         return this.creationTime;
     }
 
     @Override
-    public DbArticle setCreationTime(LocalDateTime creationTime) {
+    public DbArticle setCreationTime(OffsetDateTime creationTime) {
         this.creationTime = creationTime;
         return this;
     }
 
     @Override
-    public LocalDateTime getLastModificationTime() {
+    public OffsetDateTime getLastModificationTime() {
         return this.lastModificationTime;
     }
 
     @Override
-    public DbArticle setLastModificationTime(LocalDateTime lastModificationTime) {
+    public DbArticle setLastModificationTime(OffsetDateTime lastModificationTime) {
         this.lastModificationTime = lastModificationTime;
         return this;
     }

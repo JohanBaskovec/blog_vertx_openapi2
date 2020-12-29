@@ -15,8 +15,22 @@ public class RowMappers {
             pojo.setContent(row.getString("content"));
             pojo.setAuthorId(row.getString("author_id"));
             pojo.setVersion(row.getInteger("version"));
-            pojo.setCreationTime(row.getLocalDateTime("creation_time"));
-            pojo.setLastModificationTime(row.getLocalDateTime("last_modification_time"));
+            pojo.setCreationTime(row.getOffsetDateTime("creation_time"));
+            pojo.setLastModificationTime(row.getOffsetDateTime("last_modification_time"));
+            return pojo;
+        };
+    }
+
+    public static Function<Row,jooq.tables.pojos.DbArticleComment> getDbArticleCommentMapper() {
+        return row -> {
+            jooq.tables.pojos.DbArticleComment pojo = new jooq.tables.pojos.DbArticleComment();
+            pojo.setId(row.getString("id"));
+            pojo.setContent(row.getString("content"));
+            pojo.setAuthorId(row.getString("author_id"));
+            pojo.setVersion(row.getInteger("version"));
+            pojo.setCreationTime(row.getOffsetDateTime("creation_time"));
+            pojo.setLastModificationTime(row.getOffsetDateTime("last_modification_time"));
+            pojo.setArticleId(row.getString("article_id"));
             return pojo;
         };
     }
@@ -28,8 +42,8 @@ public class RowMappers {
             pojo.setPassword(row.getString("password"));
             pojo.setPasswordSalt(row.getString("password_salt"));
             pojo.setVersion(row.getInteger("version"));
-            pojo.setCreationTime(row.getLocalDateTime("creation_time"));
-            pojo.setLastModificationTime(row.getLocalDateTime("last_modification_time"));
+            pojo.setCreationTime(row.getOffsetDateTime("creation_time"));
+            pojo.setLastModificationTime(row.getOffsetDateTime("last_modification_time"));
             return pojo;
         };
     }
@@ -38,8 +52,8 @@ public class RowMappers {
         return row -> {
             jooq.tables.pojos.DbPermission pojo = new jooq.tables.pojos.DbPermission();
             pojo.setId(row.getString("id"));
-            pojo.setLastModificationTime(row.getLocalDateTime("last_modification_time"));
-            pojo.setCreationTime(row.getLocalDateTime("creation_time"));
+            pojo.setLastModificationTime(row.getOffsetDateTime("last_modification_time"));
+            pojo.setCreationTime(row.getOffsetDateTime("creation_time"));
             return pojo;
         };
     }
@@ -48,8 +62,8 @@ public class RowMappers {
         return row -> {
             jooq.tables.pojos.DbRole pojo = new jooq.tables.pojos.DbRole();
             pojo.setId(row.getString("id"));
-            pojo.setLastModificationTime(row.getLocalDateTime("last_modification_time"));
-            pojo.setCreationTime(row.getLocalDateTime("creation_time"));
+            pojo.setLastModificationTime(row.getOffsetDateTime("last_modification_time"));
+            pojo.setCreationTime(row.getOffsetDateTime("creation_time"));
             return pojo;
         };
     }

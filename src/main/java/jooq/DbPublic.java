@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import jooq.tables.DbArticle;
+import jooq.tables.DbArticleComment;
 import jooq.tables.DbBlogUser;
 import jooq.tables.DbPermission;
 import jooq.tables.DbRole;
@@ -25,7 +26,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DbPublic extends SchemaImpl {
 
-    private static final long serialVersionUID = -1002049610;
+    private static final long serialVersionUID = -1486477788;
 
     /**
      * The reference instance of <code>public</code>
@@ -36,6 +37,11 @@ public class DbPublic extends SchemaImpl {
      * The table <code>public.article</code>.
      */
     public final DbArticle ARTICLE = DbArticle.ARTICLE;
+
+    /**
+     * The table <code>public.article_comment</code>.
+     */
+    public final DbArticleComment ARTICLE_COMMENT = DbArticleComment.ARTICLE_COMMENT;
 
     /**
      * The table <code>public.blog_user</code>.
@@ -79,6 +85,7 @@ public class DbPublic extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
             DbArticle.ARTICLE,
+            DbArticleComment.ARTICLE_COMMENT,
             DbBlogUser.BLOG_USER,
             DbPermission.PERMISSION,
             DbRole.ROLE,

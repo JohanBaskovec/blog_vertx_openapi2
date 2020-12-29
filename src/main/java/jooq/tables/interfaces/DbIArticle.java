@@ -8,7 +8,7 @@ import io.github.jklingsporn.vertx.jooq.shared.UnexpectedJsonValueType;
 import io.github.jklingsporn.vertx.jooq.shared.internal.VertxPojo;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 
 /**
@@ -70,22 +70,22 @@ public interface DbIArticle extends VertxPojo, Serializable {
     /**
      * Setter for <code>public.article.creation_time</code>.
      */
-    public DbIArticle setCreationTime(LocalDateTime value);
+    public DbIArticle setCreationTime(OffsetDateTime value);
 
     /**
      * Getter for <code>public.article.creation_time</code>.
      */
-    public LocalDateTime getCreationTime();
+    public OffsetDateTime getCreationTime();
 
     /**
      * Setter for <code>public.article.last_modification_time</code>.
      */
-    public DbIArticle setLastModificationTime(LocalDateTime value);
+    public DbIArticle setLastModificationTime(OffsetDateTime value);
 
     /**
      * Getter for <code>public.article.last_modification_time</code>.
      */
-    public LocalDateTime getLastModificationTime();
+    public OffsetDateTime getLastModificationTime();
 
     // -------------------------------------------------------------------------
     // FROM and INTO
@@ -130,15 +130,15 @@ public interface DbIArticle extends VertxPojo, Serializable {
         }
         try {
             String creation_timeString = json.getString("creation_time");
-            setCreationTime(creation_timeString == null?null:java.time.LocalDateTime.parse(creation_timeString));
+            setCreationTime(creation_timeString == null?null:java.time.OffsetDateTime.parse(creation_timeString));
         } catch (java.lang.ClassCastException e) {
-            throw new UnexpectedJsonValueType("creation_time","java.time.LocalDateTime",e);
+            throw new UnexpectedJsonValueType("creation_time","java.time.OffsetDateTime",e);
         }
         try {
             String last_modification_timeString = json.getString("last_modification_time");
-            setLastModificationTime(last_modification_timeString == null?null:java.time.LocalDateTime.parse(last_modification_timeString));
+            setLastModificationTime(last_modification_timeString == null?null:java.time.OffsetDateTime.parse(last_modification_timeString));
         } catch (java.lang.ClassCastException e) {
-            throw new UnexpectedJsonValueType("last_modification_time","java.time.LocalDateTime",e);
+            throw new UnexpectedJsonValueType("last_modification_time","java.time.OffsetDateTime",e);
         }
         return this;
     }
