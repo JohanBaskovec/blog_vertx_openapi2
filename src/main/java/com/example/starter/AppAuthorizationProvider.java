@@ -1,5 +1,7 @@
 package com.example.starter;
 
+import io.github.jklingsporn.vertx.jooq.classic.reactivepg.ReactiveClassicQueryExecutor;
+import io.github.jklingsporn.vertx.jooq.shared.reactive.ReactiveQueryExecutor;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -9,15 +11,12 @@ import io.vertx.ext.auth.authorization.AuthorizationProvider;
 import io.vertx.ext.auth.authorization.PermissionBasedAuthorization;
 import io.vertx.ext.auth.authorization.RoleBasedAuthorization;
 import io.vertx.sqlclient.Pool;
-import jooq.tables.daos.DbRoleDao;
-import jooq.tables.daos.DbRolesPermissionsDao;
+import io.vertx.sqlclient.Row;
+import jooq.tables.DbRole;
+import jooq.tables.DbRolesPermissions;
+import jooq.tables.DbUserRoles;
 import jooq.tables.daos.DbUserRolesDao;
-import jooq.tables.pojos.DbRole;
-import jooq.tables.pojos.DbRolesPermissions;
-import jooq.tables.pojos.DbUserRoles;
 import org.jooq.Configuration;
-import org.openapitools.vertxweb.server.model.Role;
-import org.openapitools.vertxweb.server.model.Permission;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -42,28 +41,32 @@ public class AppAuthorizationProvider implements AuthorizationProvider {
     String username = appUser.getUsername();
     if (username != null) {
       Set<Authorization> authorizations = new HashSet<>();
-      DbUserRolesDao dbUserRolesDao = new DbUserRolesDao(jooqConfiguration, pool);
-      dbUserRolesDao.findManyByCondition(jooq.tables.DbUserRoles.USER_ROLES.USERNAME.eq(username))
-        .compose((List<DbUserRoles> userRoles) -> {
-          DbRoleDao dbRoleDao = new DbRoleDao(jooqConfiguration, pool);
-          List<String> roleIds = userRoles.stream().map(DbUserRoles::getRole).collect(Collectors.toList());
-          return dbRoleDao.findManyByCondition(jooq.tables.DbRole.ROLE.ID.in(roleIds));
-        })
-        .compose((List<DbRole> dbRoles) -> {
-          List<String> roleIds = dbRoles.stream().map(DbRole::getId).collect(Collectors.toList());
-          for (String id : roleIds) {
-            authorizations.add(RoleBasedAuthorization.create(id));
+      ReactiveQueryExecutor<Future<List<Row>>, Future<Row>, Future<Integer>> executor = new ReactiveClassicQueryExecutor<>(jooqConfiguration, pool, jooq.tables.mappers.RowMappers.getDbUserRolesMapper());
+      executor.findManyRow(
+        dslContext -> dslContext.select(
+          DbRole.ROLE.ID.as("role_id"),
+          DbRolesPermissions.ROLES_PERMISSIONS.PERMISSION_ID.as("permission_id"))
+          .from(DbUserRoles.USER_ROLES
+            .join(DbRole.ROLE).on(DbRole.ROLE.ID.eq(DbUserRoles.USER_ROLES.ROLE))
+            .leftJoin(DbRolesPermissions.ROLES_PERMISSIONS).on(DbRole.ROLE.ID.eq(DbRolesPermissions.ROLES_PERMISSIONS.ROLE_ID)))
+          .where(DbUserRoles.USER_ROLES.USERNAME.eq(username))
+      ).<Void>compose((List<Row> rows) -> {
+        String lastRole = "";
+        for (Row row : rows) {
+          String role = row.getString("role_id");
+          if (!role.equals(lastRole)) {
+            authorizations.add(RoleBasedAuthorization.create(role));
+            lastRole = role;
           }
-          DbRolesPermissionsDao rolesPermissionsDao = new DbRolesPermissionsDao(jooqConfiguration, pool);
-          return rolesPermissionsDao.findManyByCondition(jooq.tables.DbRolesPermissions.ROLES_PERMISSIONS.ROLE_ID.in(roleIds));
-        })
-        .<Void>compose((List<DbRolesPermissions> dbRolesPermissions) -> {
-          for (DbRolesPermissions drp : dbRolesPermissions) {
-            authorizations.add(PermissionBasedAuthorization.create(drp.getPermissionId()));
+          String permission = row.getString("permission_id");
+          if (permission != null) {
+            authorizations.add(PermissionBasedAuthorization.create(permission));
           }
-          user.authorizations().add(getId(), authorizations);
-          return Future.succeededFuture();
-        })
+        }
+        user.authorizations().add(getId(), authorizations);
+
+        return Future.succeededFuture();
+      })
         .onSuccess((Void result) -> {
           resultHandler.handle(Future.succeededFuture());
         })
