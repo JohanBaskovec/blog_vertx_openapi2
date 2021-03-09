@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
-import org.openapitools.vertxweb.server.model.Authorization;
+import org.openapitools.vertxweb.server.model.RoleAuthorization;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User   {
@@ -15,13 +15,13 @@ public class User   {
   private Long creationTime;
   private String password;
   private Integer version;
-  private List<Authorization> authorizations = new ArrayList<>();
+  private List<RoleAuthorization> authorizations = new ArrayList<>();
 
   public User () {
 
   }
 
-  public User (String username, Long lastModificationTime, Long creationTime, String password, Integer version, List<Authorization> authorizations) {
+  public User (String username, Long lastModificationTime, Long creationTime, String password, Integer version, List<RoleAuthorization> authorizations) {
     this.username = username;
     this.lastModificationTime = lastModificationTime;
     this.creationTime = creationTime;
@@ -77,10 +77,10 @@ public class User   {
 
     
   @JsonProperty("authorizations")
-  public List<Authorization> getAuthorizations() {
+  public List<RoleAuthorization> getAuthorizations() {
     return authorizations;
   }
-  public void setAuthorizations(List<Authorization> authorizations) {
+  public void setAuthorizations(List<RoleAuthorization> authorizations) {
     this.authorizations = authorizations;
   }
 

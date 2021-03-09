@@ -16,9 +16,7 @@ import org.openapitools.vertxweb.server.model.ArticleComment;
 import org.openapitools.vertxweb.server.model.ArticleCommentCreationFormData;
 import org.openapitools.vertxweb.server.model.User;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +42,7 @@ public class ArticleCommentController {
     dbArticleComment.setId(form.getId());
     dbArticleComment.setArticleId(form.getArticleId());
     dbArticleComment.setContent(form.getContent());
-    AppUser currentSessionUser = (AppUser) routingContext.user();
+    SessionUser currentSessionUser = (SessionUser) routingContext.user();
     dbArticleComment.setAuthorId(currentSessionUser.getUsername());
 
     dao.insert(dbArticleComment)

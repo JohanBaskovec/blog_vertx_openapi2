@@ -376,6 +376,7 @@ components:
       required:
         - username
         - version
+        - authorizations
       properties:
         username:
           type: string
@@ -397,7 +398,7 @@ components:
           type: array
           nullable: false
           items:
-            $ref: '#/components/schemas/Authorization'
+            $ref: '#/components/schemas/RoleAuthorization'
     Authorization:
       type: object
       required:
@@ -405,6 +406,9 @@ components:
       properties:
         type:
           type: string
+        providerId:
+          type: string
+          nullable: false
       discriminator:
         propertyName: type
         mapping:
@@ -412,21 +416,28 @@ components:
           permission: '#/components/schemas/PermissionAuthorization'
     RoleAuthorization:
       type: object
-      required:
-        - role
       allOf:
         - $ref: '#/components/schemas/Authorization'
         - type: object
+          required:
+            - role
+            - permissions
           properties:
             role:
               type: string
+              nullable: false
+            permissions:
+              type: array
+              nullable: false
+              items:
+                $ref: '#/components/schemas/PermissionAuthorization'
     PermissionAuthorization:
       type: object
-      required:
-        - permission
       allOf:
         - $ref: '#/components/schemas/Authorization'
         - type: object
+          required:
+            - permission
           properties:
             permission:
               type: string

@@ -1,5 +1,6 @@
 package com.example.starter;
 
+import com.example.starter.db.UserMapper;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -18,17 +19,17 @@ public class AppLoginHandler extends AuthenticationHandlerImpl<AppAuthentication
   static final HttpStatusException UNAUTHORIZED = new HttpStatusException(401);
   static final HttpStatusException BAD_REQUEST = new HttpStatusException(400);
   static final HttpStatusException BAD_METHOD = new HttpStatusException(405);
-  private final AppAuthorizationProvider authorizationProvider;
   private final UserService userService;
+  private final UserMapper userMapper;
 
   public AppLoginHandler(
     AppAuthenticationProvider authProvider,
-    AppAuthorizationProvider authorizationProvider,
-    UserService userService
+    UserService userService,
+    UserMapper userMapper
   ) {
     super(authProvider);
-    this.authorizationProvider = authorizationProvider;
     this.userService = userService;
+    this.userMapper = userMapper;
   }
 
   @Override
@@ -60,9 +61,8 @@ public class AppLoginHandler extends AuthenticationHandlerImpl<AppAuthentication
   @Override
   public void postAuthentication(RoutingContext ctx) {
     try {
-      AppUser sessionUser = (AppUser) ctx.user();
-      authorizationProvider.getAuthorizations(sessionUser)
-        .compose((Void result) -> userService.getAuthenticatedUser(ctx))
+      userService.getAuthenticatedUser(ctx)
+        .compose((DbBlogUserWithPermissions userWithPermissions) -> Future.succeededFuture(userMapper.fromDbWithPermissions(userWithPermissions)))
         .onSuccess(ctx::json)
         .onFailure(ctx::fail);
     } catch (Throwable t) {

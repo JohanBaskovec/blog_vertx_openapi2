@@ -1,5 +1,6 @@
 package com.example.starter;
 
+import com.example.starter.db.UserMapper;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -9,6 +10,7 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.auth.authorization.PermissionBasedAuthorization;
 import io.vertx.ext.auth.authorization.RoleBasedAuthorization;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.SessionHandler;
@@ -36,27 +38,27 @@ public class MainVerticle extends AbstractVerticle {
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
     try {
-      Configuration configuration = new DefaultConfiguration();
-      configuration.set(SQLDialect.POSTGRES);
+      Configuration jooqConfiguration = new DefaultConfiguration();
+      jooqConfiguration.set(SQLDialect.POSTGRES);
       String confFilePath = System.getenv("BLOG_CONF");
       JsonObject config = new JsonObject(vertx.fileSystem().readFileBlocking(confFilePath));
       PgConnectOptions pgConnectOptions = new PgConnectOptions(config.getJsonObject("database"));
       PoolOptions poolOptions = new PoolOptions().setMaxSize(5);
-      PgPool pool = PgPool.pool(vertx, pgConnectOptions, poolOptions);
-      ArticleController articleController = new ArticleController(configuration, pool);
-      RegistrationController registrationController = new RegistrationController(configuration, pool);
-      UserService userService = new UserService();
-      HttpSessionController httpSessionController = new HttpSessionController(configuration, pool, userService);
+      PgPool pgPool = PgPool.pool(vertx, pgConnectOptions, poolOptions);
+      ArticleController articleController = new ArticleController(jooqConfiguration, pgPool);
+      RegistrationController registrationController = new RegistrationController(jooqConfiguration, pgPool);
+      AuthorizationService authorizationService = new AuthorizationService();
+      UserService userService = new UserService(jooqConfiguration, pgPool, authorizationService);
+      HttpSessionController httpSessionController = new HttpSessionController(jooqConfiguration, pgPool, userService);
 
       SessionStore sessionStore = LocalSessionStore.create(vertx);
       SessionHandler sessionHandler = SessionHandler.create(sessionStore);
       Future<RouterBuilder> routerBuilder$ = RouterBuilder.create(vertx, "openapi.yaml");
-      AppAuthenticationProvider authenticationProvider = new AppAuthenticationProvider(new DbBlogUserDao(configuration, pool));
-      AppAuthorizationProvider authorizationProvider = new AppAuthorizationProvider(configuration, pool);
-      AuthorizationService authorizationService = new AuthorizationService();
-      UserController userController = new UserController(configuration, pool, authorizationService);
+      AppAuthenticationProvider authenticationProvider = new AppAuthenticationProvider(userService);
+      UserController userController = new UserController(userService);
       WebSocketService webSocketService = new WebSocketService();
-      ArticleCommentController articleCommentController = new ArticleCommentController(configuration, pool);
+      ArticleCommentController articleCommentController = new ArticleCommentController(jooqConfiguration, pgPool);
+      UserMapper userMapper = new UserMapper();
       Future<HttpServer> startServer$ = routerBuilder$.compose(routerBuilder -> {
         routerBuilder.rootHandler(routingContext -> {
           routingContext.response()
@@ -73,17 +75,13 @@ public class MainVerticle extends AbstractVerticle {
         routerBuilder.rootHandler(sessionHandler);
         routerBuilder.securityHandler(
           "cookieAuth",
-          new AppAuthenticationHandler(authenticationProvider, configuration, pool));
+          new AppAuthenticationHandler(authenticationProvider, jooqConfiguration, pgPool, userService));
 
         routerBuilder.operation("insertArticle")
           .handler(
-            new AppAuthorizationHandler(RoleBasedAuthorization.create("admin"))
-              .addAuthorizationProvider(authorizationProvider))
+            new AppAuthorizationHandler(PermissionBasedAuthorization.create("article_create")))
           .handler(articleController::insertArticle);
         routerBuilder.operation("updateArticle")
-          .handler(
-            new AppAuthorizationHandler(RoleBasedAuthorization.create("admin"))
-              .addAuthorizationProvider(authorizationProvider))
           .handler(articleController::updateArticle);
         routerBuilder.operation("getAllArticles")
           .handler(articleController::getAllArticles);
@@ -95,8 +93,7 @@ public class MainVerticle extends AbstractVerticle {
           .handler(articleCommentController::getAllCommentsOfArticle);
         routerBuilder.operation("insertArticleComment")
           .handler(
-            new AppAuthorizationHandler(RoleBasedAuthorization.create("user"))
-              .addAuthorizationProvider(authorizationProvider)
+            new AppAuthorizationHandler(PermissionBasedAuthorization.create("article_comment_create"))
           )
           .handler(articleCommentController::insertArticleComment);
 
@@ -107,10 +104,7 @@ public class MainVerticle extends AbstractVerticle {
           .handler(registrationController::register);
 
         routerBuilder.operation("getCurrentAuthenticatedUser")
-          .handler(
-            new AppAuthorizationHandler(RoleBasedAuthorization.create("user"))
-              .addAuthorizationProvider(authorizationProvider)
-          )
+          .handler(new AppAuthorizationHandler(RoleBasedAuthorization.create("user")))
           .handler(httpSessionController::getCurrentAuthenticatedUser);
         routerBuilder.operation("logout")
           .handler(httpSessionController::logout);
@@ -119,8 +113,8 @@ public class MainVerticle extends AbstractVerticle {
         // because AppLoginHandler extends AuthenticationHandlerImpl
         routerBuilder.operation("login").handler(new AppLoginHandler(
           authenticationProvider,
-          authorizationProvider,
-          userService
+          userService,
+          userMapper
         ));
         Router router = routerBuilder.createRouter();
 
@@ -138,7 +132,7 @@ public class MainVerticle extends AbstractVerticle {
             String fromBuffer = buffer.toString(StandardCharsets.UTF_8);
             System.out.println("Received WebSocket message:");
             System.out.println(fromBuffer);
-            AppUser sessionUser = (AppUser) sock.webUser();
+            SessionUser sessionUser = (SessionUser) sock.webUser();
             try {
               WebSocketMessage webSocketMessage = webSocketService.parseMessage(buffer);
               if (webSocketMessage instanceof WebSocketClientChatMessage) {

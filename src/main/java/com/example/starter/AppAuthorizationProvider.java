@@ -1,7 +1,6 @@
 package com.example.starter;
 
-import io.github.jklingsporn.vertx.jooq.classic.reactivepg.ReactiveClassicQueryExecutor;
-import io.github.jklingsporn.vertx.jooq.shared.reactive.ReactiveQueryExecutor;
+import io.github.jklingsporn.vertx.jooq.classic.reactivepg.ReactiveClassicGenericQueryExecutor;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -15,11 +14,9 @@ import io.vertx.sqlclient.Row;
 import jooq.tables.DbRole;
 import jooq.tables.DbRolesPermissions;
 import jooq.tables.DbUserRoles;
-import jooq.tables.daos.DbUserRolesDao;
 import org.jooq.Configuration;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AppAuthorizationProvider implements AuthorizationProvider {
   final private Configuration jooqConfiguration;
@@ -37,11 +34,11 @@ public class AppAuthorizationProvider implements AuthorizationProvider {
 
   @Override
   public void getAuthorizations(User user, Handler<AsyncResult<Void>> resultHandler) {
-    AppUser appUser = (AppUser) user;
-    String username = appUser.getUsername();
+    SessionUser sessionUser = (SessionUser) user;
+    String username = sessionUser.getUsername();
     if (username != null) {
       Set<Authorization> authorizations = new HashSet<>();
-      ReactiveQueryExecutor<Future<List<Row>>, Future<Row>, Future<Integer>> executor = new ReactiveClassicQueryExecutor<>(jooqConfiguration, pool, jooq.tables.mappers.RowMappers.getDbUserRolesMapper());
+      ReactiveClassicGenericQueryExecutor executor = new ReactiveClassicGenericQueryExecutor(jooqConfiguration, pool);
       executor.findManyRow(
         dslContext -> dslContext.select(
           DbRole.ROLE.ID.as("role_id"),

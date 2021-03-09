@@ -5,8 +5,8 @@ import io.vertx.ext.auth.impl.UserImpl;
 
 import java.util.Date;
 
-public class AppUser extends UserImpl {
-  public AppUser(String username) {
+public class SessionUser extends UserImpl {
+  public SessionUser(String username) {
     super(
       new JsonObject().put("username", username),
       new JsonObject().put("lastFetch", new Date().getTime())

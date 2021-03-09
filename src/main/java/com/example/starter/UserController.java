@@ -17,6 +17,7 @@ import jooq.tables.pojos.DbRolesPermissions;
 import jooq.tables.pojos.DbUserRoles;
 import org.jooq.Configuration;
 import org.openapitools.vertxweb.server.model.Authorization;
+import org.openapitools.vertxweb.server.model.RoleAuthorization;
 import org.openapitools.vertxweb.server.model.User;
 
 import java.util.ArrayList;
@@ -24,36 +25,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserController {
-  final private Configuration configuration;
-  final private PgPool pool;
-  final private UserMapper userMapper = new UserMapper();
-  final private AuthorizationService authorizationService;
+  private final UserService userService;
 
-  public UserController(Configuration configuration, PgPool pool, AuthorizationService authorizationService) {
-    this.configuration = configuration;
-    this.pool = pool;
-    this.authorizationService = authorizationService;
+  public UserController(UserService userService) {
+    this.userService = userService;
   }
 
   public void getUserByUsername(RoutingContext routingContext) {
-    DbBlogUserDao dao = new DbBlogUserDao(configuration, pool);
     RequestParameters requestParameters = routingContext.get(ValidationHandler.REQUEST_CONTEXT_KEY);
-    String id = requestParameters.pathParameter("username").getString();
-    Holder<User> userHolder = new Holder<>();
-    dao.findOneById(id)
-      .compose((DbBlogUser dbBlogUser) -> {
-        if (dbBlogUser == null) {
-          throw new HttpStatusException(404);
-        }
-        User user = userMapper.fromDb(dbBlogUser);
-        userHolder.value = user;
-
-        return authorizationService.getAuthorizationsOfUser(configuration, pool, user.getUsername());
-      })
-      .compose((List<Authorization> authorizations) -> {
-        userHolder.value.setAuthorizations(authorizations);
-        return Future.succeededFuture(userHolder.value);
-      })
+    String username = requestParameters.pathParameter("username").getString();
+    this.userService.getUserByUsername(username)
       .onSuccess(routingContext::json)
       .onFailure(routingContext::fail);
   }

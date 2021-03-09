@@ -4,6 +4,7 @@ import com.example.starter.db.ArticleMapper;
 import com.example.starter.db.UserMapper;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.auth.authorization.PermissionBasedAuthorization;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.impl.HttpStatusException;
 import io.vertx.ext.web.validation.RequestParameters;
@@ -17,7 +18,6 @@ import org.jooq.Configuration;
 import org.openapitools.vertxweb.server.model.Article;
 import org.openapitools.vertxweb.server.model.User;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,7 +38,7 @@ public class ArticleController {
     JsonObject body = params.body().getJsonObject();
     DbArticleDao dao = new DbArticleDao(configuration, pool);
     DbArticle dbArticle = new DbArticle(body);
-    AppUser currentSessionUser = (AppUser) routingContext.user();
+    SessionUser currentSessionUser = (SessionUser) routingContext.user();
     dbArticle.setAuthorId(currentSessionUser.getUsername());
 
     dao.insert(dbArticle).onSuccess((Integer success) -> {
@@ -52,12 +52,28 @@ public class ArticleController {
     JsonObject body = params.body().getJsonObject();
     Article article = body.mapTo(Article.class);
     DbArticleDao dao = new DbArticleDao(configuration, pool);
-    dao.findOneById(article.getId()).compose(dbArticle -> {
-      dbArticle.setContent(article.getContent());
-      dbArticle.setTitle(article.getTitle());
-      dbArticle.setLastModificationTime(OffsetDateTime.now());
-      return dao.update(dbArticle);
-    }).onSuccess((Integer i) -> routingContext.response().setStatusCode(204).end())
+    dao.findOneById(article.getId()).<Void>compose(dbArticle -> {
+      SessionUser sessionUser = (SessionUser)routingContext.user();
+      PermissionBasedAuthorization updatePermission = PermissionBasedAuthorization.create("article_update");
+      boolean hasUpdatePermission = updatePermission.match(sessionUser);
+      boolean isTheAuthor = dbArticle.getAuthorId().equals(sessionUser.getUsername());
+      if (!hasUpdatePermission && isTheAuthor) {
+        hasUpdatePermission = PermissionBasedAuthorization.create("article_update_own").match(sessionUser);
+      }
+
+      if (hasUpdatePermission) {
+        dbArticle.setContent(article.getContent());
+        dbArticle.setTitle(article.getTitle());
+        dbArticle.setLastModificationTime(OffsetDateTime.now());
+        routingContext.response().setStatusCode(204);
+        return dao.update(dbArticle).compose((Integer i) -> Future.succeededFuture());
+      } else {
+        routingContext.response().setStatusCode(401);
+        return Future.succeededFuture();
+      }
+    }).onSuccess((Void result) -> {
+      routingContext.end();
+    })
       .onFailure(routingContext::fail);
   }
 
